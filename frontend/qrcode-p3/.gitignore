@@ -12,9 +12,6 @@ dist
 dist-ssr
 *.local
 
-eslint.config*
-package*
-vite.config*
 
 
 # Editor directories and files
