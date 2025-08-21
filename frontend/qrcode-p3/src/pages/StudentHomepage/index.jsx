@@ -12,7 +12,7 @@ function StudentHomepage() {
         <p>O que deseja fazer?</p>
       </div>
 
-      <div className="container mt-5">
+      <div className="container mt-5 mb-5">
         <div className="row justify-content-center g-4">
           
           <div className="col-12 col-md-6 col-lg-5">
