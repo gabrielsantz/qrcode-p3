@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../../components/Header';
-import { BsQrCode } from "react-icons/bs";
+import { BsQrCodeScan } from "react-icons/bs";
 import { BsClockHistory } from "react-icons/bs";
 
 function StudentHomepage() {
@@ -20,7 +20,7 @@ function StudentHomepage() {
               <div className="card-body d-flex flex-column justify-content-center align-items-center">
                 <div className="card-icon mb-3">
                   <div className="rounded-circle p-3 bg-light d-inline-flex justify-content-center align-items-center">
-                    <BsQrCode size={40} />
+                    <BsQrCodeScan size={40} />
                   </div>
                 </div>
                 <h5 className="card-title fw-bold">Ler QR Code</h5>
