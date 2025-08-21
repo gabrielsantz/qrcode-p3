@@ -9,8 +9,8 @@ function Header() {
           <img
             src={qrcode}
             alt="Logo"
-            width="40"
-            height="40"
+            width="55"
+            height="55"
             className="me-2"
           />
           <span className="fw-bold">Sistema de Presença - UFAL</span>
