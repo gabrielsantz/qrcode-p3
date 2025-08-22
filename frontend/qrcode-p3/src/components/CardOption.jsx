@@ -3,7 +3,8 @@ export default function CardOption({
   title, 
   text, 
   buttonLabel, 
-  buttonVariant = "primary" 
+  buttonVariant = "primary",
+  onClick
 }) {
   return (
     <div className="col-12 col-md-6 col-lg-5">
@@ -17,7 +18,10 @@ export default function CardOption({
           <h5 className="card-title fw-bold">{title}</h5>
           <p className="card-text">{text}</p>
           <div className="mt-auto">
-            <button className={`btn btn-outline-${buttonVariant} mt-3`}>
+            <button 
+              className={`btn btn-outline-${buttonVariant} mt-3`}
+              onClick={onClick}
+            >
               {buttonLabel}
             </button>
           </div>
