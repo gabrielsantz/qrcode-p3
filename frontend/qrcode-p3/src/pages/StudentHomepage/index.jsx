@@ -3,8 +3,11 @@ import Header from '../../components/Header';
 import CardOption from '../../components/CardOption';
 import { BsQrCodeScan } from "react-icons/bs";
 import { BsClockHistory } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 function StudentHomepage() {
+  const navigate = useNavigate();
+  
   return (
     <>
       <Header />
@@ -22,6 +25,7 @@ function StudentHomepage() {
             text="Marque sua presença na aula"
             buttonLabel="Ler"
             buttonVariant="primary"
+            onClick={() => navigate("/student/qr-reader")}
           />
 
           <CardOption 
