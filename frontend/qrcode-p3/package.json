@@ -10,9 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@supabase/auth-ui-react": "^0.4.7",
-    "@supabase/auth-ui-shared": "^0.1.8",
-    "@supabase/supabase-js": "^2.56.0",
     "@yudiel/react-qr-scanner": "^2.3.1",
     "bootstrap": "^5.3.7",
     "react": "^18.3.1",
