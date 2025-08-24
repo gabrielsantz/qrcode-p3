@@ -6,10 +6,7 @@ import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { Routes, Route } from 'react-router-dom';
 
 
-import Home from './pages/Home';
-import StudentHomepage from './pages/StudentHomepage';
-import ProfessorHomepage from './pages/ProfessorHomepage';
-import QrReaderPage from './pages/QrReader';
+import { Home, ProfessorHomepage, QrReaderPage, StudentHomepage } from './pages';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
