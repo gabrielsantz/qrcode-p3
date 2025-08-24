@@ -1,1 +1,8 @@
 fastapi[standard]
+sqlalchemy
+psycopg2-binary
+pydantic
+pyjwt
+pydantic_settings
+bcrypt
+alembic

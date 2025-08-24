@@ -1,2 +1,6 @@
 .env
 /.venv
+/data
+/alembic
+alembic.ini
+*cache*
