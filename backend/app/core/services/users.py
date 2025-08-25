@@ -16,7 +16,8 @@ def register_user(user_in: UserCreate) -> User:
             )
         
         
-        new_user = User(email=user_in.email, password=user_in.password, role=user_in.role)
+        new_user = User(name = user_in.name, registration = user_in.registration, email=user_in.email, 
+                        password=user_in.password, role=user_in.role)
         
         db.add(new_user)
         db.commit()

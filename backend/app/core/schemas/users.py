@@ -4,6 +4,8 @@ import uuid
 from app.core.models import UserRole
 
 class UserCreate(BaseModel):
+    name:str
+    registration: str
     email: EmailStr
     password: str
     role: UserRole
