@@ -1,7 +1,6 @@
 from sqlalchemy import func, text
 from sqlalchemy.orm import Mapped, mapped_column
 from .table_registry import table_registry
-from app.core.security import hash_password
 import uuid
 from datetime import datetime
 import enum
@@ -26,19 +25,18 @@ class User:
     
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
 
-    def __init__(self, name:str, registration:str, email: str, password: str, role: UserRole):
+    def __init__(self, name:str, registration:str, email: str, hashed_password: str, role: UserRole):
         if not name:
             raise ValueError("O nome é obrigatório.")
         if not registration:
             raise ValueError("A matrícula é obrigatória.")
         if not email:
             raise ValueError("O e-mail é obrigatório.")
-        if not password:
+        if not hashed_password:
             raise ValueError("A senha é obrigatória.")
         if not role:
             raise ValueError("A role é obrigatória.")
         
-        hashed_password = hash_password(password)
 
         self.name = name
         self.registration = registration

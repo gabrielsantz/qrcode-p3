@@ -1,7 +1,10 @@
 import fastapi
-from app.core.security import create_access_token
+from app.core.security import create_access_token, get_current_user
 from app.core.services.users import register_user, authenticate_user
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.core.models import User
 
 from app.core.schemas.users import UserCreate, UserPublic, Token, UserLogin
 
@@ -39,3 +42,8 @@ def login_for_access_token_route(
     )
     
     return {"message": "Login realizado com sucesso"}
+
+
+@router.get("/me", response_model=UserPublic)
+def read_current_user_route(current_user: 'User' = fastapi.Depends(get_current_user)):
+    return current_user
