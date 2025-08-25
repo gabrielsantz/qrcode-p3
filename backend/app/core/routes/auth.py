@@ -37,12 +37,11 @@ def login_for_access_token_route(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=True,
-        samesite="strict"
+        secure=False,
+        samesite="lax"
     )
     
-    return {"message": "Login realizado com sucesso"}
-
+    return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/me", response_model=UserPublic)
 def read_current_user_route(current_user: 'User' = fastapi.Depends(get_current_user)):

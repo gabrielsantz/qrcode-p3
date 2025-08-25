@@ -8,7 +8,7 @@ from app.core.services import crud_users
 
 def register_user(user_in: UserCreate) -> User:
     with get_db() as db:
-        existing_user = crud_users.get_user_by_email(db, email=user_in.email)
+        existing_user = db.query(User).filter(User.email == user_in.email).first()
         if existing_user:
             raise fastapi.HTTPException(
                 status_code=fastapi.status.HTTP_409_CONFLICT,
@@ -23,11 +23,11 @@ def register_user(user_in: UserCreate) -> User:
     
 def authenticate_user(email: str, password: str) -> User | None:
     with get_db() as db:
-        user = crud_users.get_user_by_email(db, email=email)
+        existing_user = db.query(User).filter(User.email == email).first()
         
-        if not user or not security.verify_password(
-            plain_password=password, hashed_password=user.hashed_password
+        if not existing_user or not security.verify_password(
+            plain_password=password, hashed_password=existing_user.hashed_password
         ):
             return None 
             
-        return user
+        return existing_user
