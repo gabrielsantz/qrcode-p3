@@ -37,8 +37,8 @@ def login_for_access_token_route(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,
-        samesite="lax"
+        secure=True,
+        samesite="none"
     )
     
     return {"access_token": access_token, "token_type": "bearer"}

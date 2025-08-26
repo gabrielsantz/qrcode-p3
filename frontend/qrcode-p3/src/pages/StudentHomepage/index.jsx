@@ -4,15 +4,19 @@ import CardOption from '../../components/CardOption';
 import { BsQrCodeScan } from "react-icons/bs";
 import { BsClockHistory } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../AuthContext";
+
 
 function StudentHomepage() {
   const navigate = useNavigate();
+  const {user} = useAuth()
+
   
   return (
     <>
       <Header />
       <div className="text-center mt-5 px-4">
-        <h1>Bem-vindo, nome do aluno! 👋</h1>
+        <h1>Bem-vindo, {user?.name ?? "Professor"} 👋</h1>
         <p>O que deseja fazer?</p>
       </div>
 

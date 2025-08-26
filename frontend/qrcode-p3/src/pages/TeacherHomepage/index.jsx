@@ -3,13 +3,16 @@ import Header from '../../components/Header';
 import CardOption from '../../components/CardOption';
 import { BsQrCode } from "react-icons/bs";
 import { BsClockHistory } from "react-icons/bs";
+import { useAuth } from "../../AuthContext";
 
-function ProfessorHomepage() {
+function TeacherHomepage() {
+  const {user} = useAuth()
+
   return (
     <>
       <Header />
       <div className="text-center mt-5 px-4">
-        <h1>Bem-vindo, nome do professor! 👋</h1>
+        <h1>Bem-vindo, {user?.name ?? "Professor"}👋</h1>
         <p>O que deseja fazer?</p>
       </div>
 
@@ -38,4 +41,4 @@ function ProfessorHomepage() {
   );
 }
 
-export default ProfessorHomepage;
+export default TeacherHomepage;

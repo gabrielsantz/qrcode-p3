@@ -1,14 +1,16 @@
 import Home from "./Home";
-import ProfessorHomepage from "./ProfessorHomepage";
+import TeacherHomepage from "./TeacherHomepage/index.jsx";
 import QrReaderPage from "./QrReader";
 import StudentHomepage from "./StudentHomepage";
 import LoginPage from "./LoginPage";
+import RegisterPage from "./RegisterPage.jsx";
 
 export  {
     Home,
-    ProfessorHomepage,
+    TeacherHomepage,
     QrReaderPage,
     StudentHomepage,
-    LoginPage
+    LoginPage,
+    RegisterPage
 }
 

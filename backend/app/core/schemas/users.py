@@ -15,8 +15,7 @@ class UserLogin(BaseModel):
     password: str
 
 class UserPublic(BaseModel):
-    id: uuid.UUID
-    email: EmailStr
+    name: str
     role: UserRole
     is_active: bool
 

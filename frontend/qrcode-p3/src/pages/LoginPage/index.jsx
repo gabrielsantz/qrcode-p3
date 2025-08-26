@@ -1,31 +1,33 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
+import { useAuth } from '../../AuthContext';
 import './style.css';
 
 function LoginPage({ onLoginSuccess }) {
+  const { setUser } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
     setError(null);
-
     try {
-      const body = { email, password };
-      const response = await apiClient.post('/auth/token', body);
-
-      console.log('Login bem-sucedido:', response.data);
-
-      if (onLoginSuccess) {
-        onLoginSuccess();
+      await apiClient.post('/auth/token', { email, password });
+      const { data: me } = await apiClient.get('/auth/me');
+      setUser(me);
+      switch (me.role) {
+        case 'student': navigate('/student/'); break;
+        case 'teacher': navigate('/professor/'); break;
+        default: navigate('/');
       }
+      if (onLoginSuccess) onLoginSuccess(me);
     } catch (err) {
-      const errorMessage = err.response?.data?.detail || 'Erro ao fazer login. Tente novamente.';
-      setError(errorMessage);
-      console.error('Erro no login:', err);
+      setError(err.response?.data?.detail || 'Erro ao fazer login. Tente novamente.');
     } finally {
       setIsLoading(false);
     }
@@ -67,3 +69,4 @@ function LoginPage({ onLoginSuccess }) {
 }
 
 export default LoginPage;
+  

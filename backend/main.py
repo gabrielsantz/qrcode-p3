@@ -7,7 +7,8 @@ api_router.include_router(authn_router, prefix="/auth", tags=["Autenticação"])
 
 app = FastAPI(title="PresençaQR - UFAL")
 origins = [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "http://127.0.0.1:5173"
 ]
 
 app.add_middleware(

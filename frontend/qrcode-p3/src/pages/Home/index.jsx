@@ -3,8 +3,10 @@ import Header from '../../components/Header';
 import CardOption from '../../components/CardOption';
 import { BsFillPersonFill } from "react-icons/bs";
 import { BsFillPersonPlusFill } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+  const navigate = useNavigate()
   return (
     <>
       <Header />
@@ -22,6 +24,7 @@ function Home() {
             text="Caso já tenha cadastro no sistema (professores ou alunos)"
             buttonLabel="Login"
             buttonVariant="primary"
+            onClick={() => navigate("/login")}
           />
 
           <CardOption
@@ -30,6 +33,7 @@ function Home() {
             text="Faça o seu registro e espere a ativação da coordernação"
             buttonLabel="Registro"
             buttonVariant="secondary"
+            onClick={() => navigate("/register")}
           />
 
         </div>

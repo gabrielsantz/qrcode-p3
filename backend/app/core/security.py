@@ -46,7 +46,7 @@ def get_current_user(
     except jwt.PyJWTError:
         raise fastapi.HTTPException(status_code=401, detail="Token has expired or is invalid")
 
-    user = crud_users.get_user_by_email(db=db, email=email)
+    user = crud_users.get_user_by_email(email=email)
     if user is None:
         raise fastapi.HTTPException(status_code=401, detail="User not found")
     
