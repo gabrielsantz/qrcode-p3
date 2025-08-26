@@ -7,7 +7,7 @@ def get_user_by_email(email: str) -> User | None:
     with get_db() as db:
         return db.query(User).filter(User.email == email).first()
 
-def create_user(db: Session, user_in: UserCreate, hashed_password: str) -> User:
+def create_user(user_in: UserCreate, hashed_password: str) -> User:
     new_user = User(name=user_in.name, registration=user_in.registration, email=user_in.email,
         hashed_password=hashed_password, role=user_in.role)
 

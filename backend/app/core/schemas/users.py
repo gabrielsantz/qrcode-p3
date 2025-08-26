@@ -1,14 +1,15 @@
 from pydantic import BaseModel, EmailStr
-import uuid
+from typing import Optional
 
 from app.core.models import UserRole
 
 class UserCreate(BaseModel):
-    name:str
-    registration: str
+    name: str
     email: EmailStr
     password: str
     role: UserRole
+    registration: Optional[str] = None
+
 
 class UserLogin(BaseModel):
     email: EmailStr

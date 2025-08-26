@@ -17,7 +17,7 @@ def register_user(user_in: UserCreate) -> User:
         
         hashed_pass = security.hash_password(user_in.password)
         
-        new_user = crud_users.create_user(db, user_in=user_in, hashed_password=hashed_pass)
+        new_user = crud_users.create_user(user_in=user_in, hashed_password=hashed_pass)
     
         return new_user
     
