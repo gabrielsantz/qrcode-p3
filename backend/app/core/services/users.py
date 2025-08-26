@@ -15,6 +15,9 @@ def register_user(user_in: UserCreate) -> User:
                 detail="Um usuário com este e-mail já existe.",
             )
         
+        if user_in.registration == "":
+            user_in.registration = None
+
         hashed_pass = security.hash_password(user_in.password)
         
         new_user = crud_users.create_user(user_in=user_in, hashed_password=hashed_pass)
