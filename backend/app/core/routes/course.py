@@ -1,6 +1,6 @@
 import uuid
-from typing import List
 from fastapi import APIRouter, status
+
 
 from app.core.schemas.course import CourseCreate, CourseRead, CourseUpdate
 from app.core.services import courses as course_service
@@ -9,13 +9,14 @@ router = APIRouter(prefix="/courses", tags=["Cursos"])
 
 @router.post("/", response_model=CourseRead, status_code=status.HTTP_201_CREATED)
 def create_new_course(course_in: CourseCreate):
-    course = course_service.create_course(course_in=course_in)
-    return course
+    return course_service.create_course(course_in=course_in)
+    
 
-@router.get("/", response_model=List[CourseRead])
+@router.get("/", response_model=list[CourseRead])
 def read_all_courses(skip: int = 0, limit: int = 100):
     return course_service.get_all_courses(skip=skip, limit=limit)
 
+    
 @router.get("/{course_id}", response_model=CourseRead)
 def read_course(course_id: uuid.UUID):
     return course_service.get_course(course_id=course_id)
