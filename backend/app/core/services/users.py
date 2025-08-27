@@ -20,13 +20,13 @@ def register_user(user_in: UserCreate) -> User:
 
         hashed_pass = security.hash_password(user_in.password)
         
-        new_user = crud_users.create_user(user_in=user_in, hashed_password=hashed_pass)
+        new_user = crud_users.create_user(session = db, user_in=user_in, hashed_password=hashed_pass)
     
         return new_user
     
 def authenticate_user(email: str, password: str) -> User | None:
     with get_db() as db:
-        existing_user = db.query(User).filter(User.email == email).first()
+        existing_user = crud_users.get_user_by_email(session=db, email=email)
         
         if not existing_user or not security.verify_password(
             plain_password=password, hashed_password=existing_user.hashed_password
