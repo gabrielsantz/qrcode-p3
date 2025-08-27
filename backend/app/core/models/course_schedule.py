@@ -10,13 +10,13 @@ if TYPE_CHECKING:
     from .course import Course
 
 class DayOfWeek(enum.Enum):
-    MONDAY = 0
-    TUESDAY = 1
-    WEDNESDAY = 2
-    THURSDAY = 3
-    FRIDAY = 4
-    SATURDAY = 5
-    SUNDAY = 6
+    MONDAY = "monday"
+    TUESDAY = "tuesday"
+    WEDNESDAY = "wednesday"
+    THURSDAY = "thursday"
+    FRIDAY = "friday"
+    SATURDAY = "saturday"
+    SUNDAY = "sunday"
 
 @table_registry.mapped_as_dataclass(init=False)
 class CourseSchedule:
