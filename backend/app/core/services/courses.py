@@ -49,7 +49,16 @@ def get_all_courses(skip: int = 0, limit: int = 100) -> List[Course]:
 
 def update_course(course_id: uuid.UUID, course_update: CourseUpdate) -> Course:
     with get_db() as db:
-        course = get_course(db=db, course_id=course_id)
+        course = (
+            db.query(Course)
+            .options(joinedload(Course.teacher).joinedload(Teacher.user))
+            .filter(Course.id == course_id)
+            .first()
+        )
+        if not course:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Curso não encontrado")
+        course.teacher.name = course.teacher.user.name
+
         
         update_data = course_update.dict(exclude_unset=True)
         for key, value in update_data.items():
