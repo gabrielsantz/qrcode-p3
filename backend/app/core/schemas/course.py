@@ -31,7 +31,7 @@ class CourseCreate(BaseModel):
     name: str
     description: Optional[str] = None
     teacher_id: uuid.UUID
-    schedules: Optional[list[ScheduleForCourseCreate]] = []
+    schedules: list[ScheduleForCourseCreate]
 
 class CourseUpdate(BaseModel):
     name: Optional[str] = None
