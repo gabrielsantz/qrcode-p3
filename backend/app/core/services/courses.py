@@ -1,6 +1,6 @@
 import uuid
 from typing import List
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import joinedload
 from fastapi import HTTPException, status
 
 from app.infra.db.connection import get_db

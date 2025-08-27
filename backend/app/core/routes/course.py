@@ -1,7 +1,6 @@
 import uuid
 from typing import List
-from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, status
 
 from app.core.schemas.course import CourseCreate, CourseRead, CourseUpdate
 from app.core.services import courses as course_service
