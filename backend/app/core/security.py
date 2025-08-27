@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.core.models import User
 
-from app.core.services import crud_users 
 
 
 def hash_password(plain_password: str) -> str:
@@ -46,8 +45,9 @@ def get_current_user(
     except jwt.PyJWTError:
         raise fastapi.HTTPException(status_code=401, detail="Token has expired or is invalid")
 
-    user = crud_users.get_user_by_email(email=email)
-    if user is None:
-        raise fastapi.HTTPException(status_code=401, detail="User not found")
+    with get_db() as db:
+        user = db.query(User).filter(User.email == email).first()
+        if user is None:
+            raise fastapi.HTTPException(status_code=401, detail="User not found")
     
     return user

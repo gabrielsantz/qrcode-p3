@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 from app.core.schemas.users import UserCreate, UserPublic, Token, UserLogin
 
-router = fastapi.APIRouter()
+router = fastapi.APIRouter(prefix="/auth", tags=["Autenticação"])
 
 @router.post("/register", response_model=UserPublic, status_code=fastapi.status.HTTP_201_CREATED)
 def register_user_route(user_in: UserCreate):
