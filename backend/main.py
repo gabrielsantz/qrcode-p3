@@ -1,11 +1,13 @@
 from fastapi import FastAPI, APIRouter
 from app.core.routes.auth import router as authn_router
 from app.core.routes.course import router as courses_router
+from app.core.routes.enrollment import router as enrollments_router
 from fastapi.middleware.cors import CORSMiddleware
 
 api_router = APIRouter()
 api_router.include_router(authn_router)
 api_router.include_router(courses_router)
+api_router.include_router(enrollments_router)
 
 
 app = FastAPI(title="PresençaQR - UFAL")

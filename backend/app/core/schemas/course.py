@@ -7,7 +7,7 @@ class TeacherInfo(BaseModel):
     name: str
 
     class Config:
-        orm_mode = True 
+        from_attributes = True 
 
 class CourseCreate(BaseModel):
     name: str
@@ -23,6 +23,6 @@ class CourseRead(BaseModel):
     name: str
     description: Optional[str]
     teacher: TeacherInfo
-    
+
     class Config:
-        orm_mode = True
+        from_attributes = True 
