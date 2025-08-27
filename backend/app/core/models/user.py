@@ -1,10 +1,17 @@
 from sqlalchemy import func, text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Optional
 from .table_registry import table_registry
 import uuid
 from datetime import datetime
 import enum
+
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .student import Student
+    from .teacher import Teacher
+
 
 class UserRole(enum.Enum):
     STUDENT = "student"
@@ -21,10 +28,11 @@ class User:
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(nullable=False)
     role: Mapped[UserRole] = mapped_column(nullable=False)
-
     is_active: Mapped[bool] = mapped_column(nullable=False, server_default=text("false"))
-    
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+
+    student: Mapped[Optional["Student"]] = relationship(back_populates="user")
+    teacher: Mapped[Optional["Teacher"]] = relationship(back_populates="user")
 
     def __init__(self, name:str, email: str, hashed_password: str, role: UserRole, registration: str | None = None):
         if not name:
@@ -47,4 +55,3 @@ class User:
         self.email = email
         self.hashed_password = hashed_password
         self.role = role
-
