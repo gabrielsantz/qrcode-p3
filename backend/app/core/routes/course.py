@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.core.schemas.course import CourseCreate, CourseRead, CourseUpdate
 from app.core.services import courses as course_service
 
-router = APIRouter(prefix="/courses", tags=["Courses"])
+router = APIRouter(prefix="/courses", tags=["Cursos"])
 
 @router.post("/", response_model=CourseRead, status_code=status.HTTP_201_CREATED)
 def create_new_course(course_in: CourseCreate):
