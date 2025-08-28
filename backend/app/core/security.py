@@ -37,14 +37,14 @@ def get_current_user(
 
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        id: str = payload.get("sub")
+        if id is None:
             raise fastapi.HTTPException(status_code=401, detail="Invalid token payload")
     except jwt.PyJWTError:
         raise fastapi.HTTPException(status_code=401, detail="Token has expired or is invalid")
 
     with get_db() as db:
-        user = db.query(User).filter(User.email == email).first()
+        user = db.query(User).filter(User.id == id).first()
         if user is None:
             raise fastapi.HTTPException(status_code=401, detail="User not found")
     

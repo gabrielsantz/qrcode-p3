@@ -31,7 +31,7 @@ def login_for_access_token_route(
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    access_token = create_access_token(data={"sub": user.email, "role": user.role.value})
+    access_token = create_access_token(data={"sub": str(user.id), "role": user.role.value})
 
     response.set_cookie(
         key="access_token",
