@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import apiClient from '../../api';
 import { useNavigate } from 'react-router-dom';
-import './style.css';
 
 function RegisterPage({ onRegisterSuccess }) {
   const [name, setName] = useState('');
@@ -46,80 +45,87 @@ function RegisterPage({ onRegisterSuccess }) {
   };
 
   return (
-    <div className="register-container">
-      <form onSubmit={handleSubmit} className="register-form">
-        <h2>Registro</h2>
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+      <div className="card shadow p-4" style={{ maxWidth: '450px', width: '100%' }}>
+        <h2 className="text-center mb-4">Registro</h2>
 
-        <div className="input-group">
-          <label htmlFor="name">Nome</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            disabled={isLoading}
-          />
-        </div>
-
-        {role === 'student' && (
-          <div className="input-group">
-            <label htmlFor="registration">Matrícula</label>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label htmlFor="name" className="form-label">Nome</label>
             <input
               type="text"
-              id="registration"
-              value={registration}
-              onChange={(e) => setRegistration(e.target.value)}
-              required={role === 'student'}
+              className="form-control"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
               disabled={isLoading}
             />
           </div>
-        )}
 
-        <div className="input-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={isLoading}
-          />
-        </div>
+          {role === 'student' && (
+            <div className="mb-3">
+              <label htmlFor="registration" className="form-label">Matrícula</label>
+              <input
+                type="text"
+                className="form-control"
+                id="registration"
+                value={registration}
+                onChange={(e) => setRegistration(e.target.value)}
+                required={role === 'student'}
+                disabled={isLoading}
+              />
+            </div>
+          )}
 
-        <div className="input-group">
-          <label htmlFor="password">Senha</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={isLoading}
-          />
-        </div>
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">Email</label>
+            <input
+              type="email"
+              className="form-control"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
 
-        <div className="input-group">
-          <label htmlFor="role">Papel</label>
-          <select
-            id="role"
-            value={role}
-            onChange={handleRoleChange}
-            disabled={isLoading}
-          >
-            <option value="student">Estudante</option>
-            <option value="teacher">Professor</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">Senha</label>
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
 
-        {error && <p className="error-message">{error}</p>}
+          <div className="mb-3">
+            <label htmlFor="role" className="form-label">Papel</label>
+            <select
+              id="role"
+              className="form-select"
+              value={role}
+              onChange={handleRoleChange}
+              disabled={isLoading}
+            >
+              <option value="student">Estudante</option>
+              <option value="teacher">Professor</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
 
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? 'Registrando...' : 'Registrar'}
-        </button>
-      </form>
+          {error && <div className="alert alert-danger text-center">{error}</div>}
+
+          <button type="submit" className="btn btn-primary w-100" disabled={isLoading}>
+            {isLoading ? 'Registrando...' : 'Registrar'}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
