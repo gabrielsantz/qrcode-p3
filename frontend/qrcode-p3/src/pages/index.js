@@ -4,6 +4,7 @@ import QrReaderPage from "./QrReader";
 import StudentHomepage from "./StudentHomepage";
 import LoginPage from "./LoginPage";
 import RegisterPage from "./RegisterPage.jsx";
+import QrGenerator from "./QrGenerator";
 
 export  {
     Home,
@@ -11,6 +12,7 @@ export  {
     QrReaderPage,
     StudentHomepage,
     LoginPage,
-    RegisterPage
+    RegisterPage,
+    QrGenerator
 }
 

@@ -4,9 +4,12 @@ import CardOption from '../../components/CardOption';
 import { BsQrCode } from "react-icons/bs";
 import { BsClockHistory } from "react-icons/bs";
 import { useAuth } from "../../AuthContext";
+import { useNavigate } from 'react-router-dom';
 
 function TeacherHomepage() {
   const {user} = useAuth()
+  const navigate = useNavigate();
+  
 
   return (
     <>
@@ -25,6 +28,7 @@ function TeacherHomepage() {
                 text="Gerar o QR Code da aula"
                 buttonLabel="Gerar"
                 buttonVariant="primary"
+                onClick={() => navigate("/professor/qr-code")}
             />
 
             <CardOption
