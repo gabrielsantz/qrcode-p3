@@ -7,9 +7,7 @@ from sqlalchemy.orm import Session
 from app.infra.config import settings
 from app.infra.db.connection import get_db
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from app.core.models import User
+from app.core.models import User
 
 
 
