@@ -5,6 +5,10 @@ import StudentHomepage from "./StudentHomepage";
 import LoginPage from "./LoginPage";
 import RegisterPage from "./RegisterPage.jsx";
 import QrGenerator from "./QrGenerator";
+import AttendanceHistory from "./AttendanceHistory/index.jsx";
+import ReportGeneration from "./ReportGeneration"
+import Reports from "./Reports"
+import PastReport from "./PastReport"
 
 export  {
     Home,
@@ -13,6 +17,10 @@ export  {
     StudentHomepage,
     LoginPage,
     RegisterPage,
-    QrGenerator
+    QrGenerator,
+    AttendanceHistory,
+    ReportGeneration,
+    Reports,
+    PastReport
 }
 
