@@ -27,7 +27,7 @@ def generate_qr_token(request: QRTokenRequest, current_user: User) -> QRTokenRes
 
 
         now = datetime.utcnow()
-        expires_at = now + timedelta(seconds=45)
+        expires_at = now + timedelta(seconds=60)
         
         payload = {
             "class_session_id": str(request.class_session_id),
@@ -49,6 +49,7 @@ def generate_qr_token(request: QRTokenRequest, current_user: User) -> QRTokenRes
             expires_at=expires_at,
             refresh_interval=30
         )
+
 
 def scan_qr_code(scan_data: QRScanRequest, current_user: User) -> QRScanResponse:
     with get_db() as db:
@@ -134,4 +135,12 @@ def scan_qr_code(scan_data: QRScanRequest, current_user: User) -> QRScanResponse
         db.commit()
         db.refresh(new_attendance)
         
-        return new_attendance
+        return QRScanResponse(
+            id = new_attendance.id,
+            student_id = new_attendance.student_id,
+            course_id = new_attendance.course_id,
+            class_session_id = new_attendance.class_session_id,
+            present = True,
+            date = datetime.utcnow()
+        )
+    

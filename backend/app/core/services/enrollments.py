@@ -36,6 +36,7 @@ def create_enrollment(enrollment_in: EnrollmentCreate) -> Enrollment:
         db.commit()
         db.refresh(new_enrollment)
         new_enrollment.student.name = student.user.name
+        new_enrollment.student.registration = student.user.registration
 
         
         return EnrollmentRead.model_validate(new_enrollment)

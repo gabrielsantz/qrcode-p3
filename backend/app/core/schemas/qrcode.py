@@ -3,12 +3,12 @@ from datetime import datetime
 from pydantic import BaseModel
 
 class QRTokenRequest(BaseModel):
-    course_id: uuid.UUID
+    class_session_id: uuid.UUID
 
 
 class QRTokenResponse(BaseModel):
     token: str
-    course_id: uuid.UUID
+    class_session_id: uuid.UUID
     expires_at: datetime
     refresh_interval: int = 60
 
