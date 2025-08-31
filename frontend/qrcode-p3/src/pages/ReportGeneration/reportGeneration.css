@@ -1,0 +1,66 @@
+.attendance-list-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #fff;
+}
+
+.materia-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.materia-header label {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.materia-display-box {
+  flex-grow: 1;
+  padding: 10px 15px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  font-size: 20px;
+}
+
+.presence-list-table {
+  margin-bottom: 40px;
+}
+
+.presence-list-table thead {
+  background-color: #f2f2f2;
+}
+
+.presence-list-table th,
+.presence-list-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-custom {
+  width: 100%;
+  max-width: 400px;
+  padding: 15px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  background-color: #fff;
+  border: 2px solid #000;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-custom:hover {
+  background-color: #000;
+  color: #fff;
+}
