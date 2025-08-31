@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .course import Course
+    from .student import Student
 
 @table_registry.mapped_as_dataclass(init=False)
 class Attendance:
@@ -18,4 +19,5 @@ class Attendance:
     date: Mapped[datetime] = mapped_column(server_default=func.now())
     present: Mapped[bool] = mapped_column(nullable=False, server_default=text("false"))
 
+    student: Mapped["Student"] = relationship()
     course_: Mapped["Course"] = relationship(back_populates="attendances")

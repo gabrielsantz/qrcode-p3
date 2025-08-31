@@ -7,6 +7,7 @@ from .user import User
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .enrollment import Enrollment
+    from .attendance import Attendance
 
 
 @table_registry.mapped_as_dataclass(init=False)
@@ -17,5 +18,5 @@ class Student:
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), unique=True)
 
     user: Mapped[User] = relationship(back_populates="student")
-
     enrollments: Mapped[list["Enrollment"]] = relationship(back_populates="student")
+    attendances: Mapped[list["Attendance"]] = relationship()
