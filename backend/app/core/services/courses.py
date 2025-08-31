@@ -116,7 +116,7 @@ def update_course(course_id: uuid.UUID, course_update: CourseUpdate) -> Course:
 
 def delete_course(course_id: uuid.UUID) -> None:
     with get_db() as db:
-        course = get_course(course_id=course_id)
+        course = get_course_by_id(course_id=course_id)
         db.delete(course)
         db.commit()
         return

@@ -6,7 +6,7 @@ from .user import User
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from enrollment import Enrollment
+    from .enrollment import Enrollment
 
 
 @table_registry.mapped_as_dataclass(init=False)
