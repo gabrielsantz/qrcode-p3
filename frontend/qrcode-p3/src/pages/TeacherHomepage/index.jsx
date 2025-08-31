@@ -37,6 +37,7 @@ function TeacherHomepage() {
                 text="Verifique as presenças de aulas passadas ministradas por você"
                 buttonLabel="Verificar"
                 buttonVariant="secondary"
+                onClick={() => navigate("/professor/reports")}
             />
 
         </div>
