@@ -38,6 +38,7 @@ function StudentHomepage() {
             text="Verifique suas últimas presenças nas aulas"
             buttonLabel="Ver"
             buttonVariant="secondary"
+            onClick={() => navigate("/student/attendance")}
           />
 
         </div>
