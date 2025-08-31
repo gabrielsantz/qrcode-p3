@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .course import Course
     from .student import Student
+    from .class_session import ClassSession
 
 @table_registry.mapped_as_dataclass(init=False)
 class Attendance:
@@ -16,8 +17,11 @@ class Attendance:
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("students.id"))
     course_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("courses.id"))
-    date: Mapped[datetime] = mapped_column(server_default=func.now())
-    present: Mapped[bool] = mapped_column(nullable=False, server_default=text("false"))
+    class_session_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("class_sessions.id"))
+    
+    present: Mapped[bool] = mapped_column(nullable=False, server_default=text("true"))
+    marked_at: Mapped[datetime] = mapped_column(server_default=func.now())
 
-    student: Mapped["Student"] = relationship()
-    course_: Mapped["Course"] = relationship(back_populates="attendances")
+    student: Mapped["Student"] = relationship(back_populates="attendances")
+    course_: Mapped["Course"] = relationship()
+    class_session: Mapped["ClassSession"] = relationship(back_populates="attendances")

@@ -1,16 +1,17 @@
 import uuid
 import datetime
-from typing import Optional
 from pydantic import BaseModel
+from typing import Optional
+
 
 
 class StudentInfo(BaseModel):
     id: uuid.UUID
     name: str
-    registration: Optional[str]
+    registration: Optional[str] = None
 
     class Config:
-        from_attributes = True 
+        from_attributes = True
 
 class CourseInfo(BaseModel):
     id: uuid.UUID

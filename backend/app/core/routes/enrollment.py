@@ -12,7 +12,6 @@ router = APIRouter()
 @router.post("/enrollments", response_model=EnrollmentRead, status_code=status.HTTP_201_CREATED, tags=["Matrículas"])
 def enroll_student_in_course(enrollment_in: EnrollmentCreate):
     enrollment = enrollment_service.create_enrollment(enrollment_in=enrollment_in)
-    enrollment.student.name = enrollment.student.user.name
     return enrollment
 
 @router.delete("/enrollments/{enrollment_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Matrículas"])

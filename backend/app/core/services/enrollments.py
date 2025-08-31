@@ -5,7 +5,7 @@ from fastapi import HTTPException, status
 
 from app.infra.db.connection import get_db
 from app.core.models import Enrollment, Student, Course
-from app.core.schemas.enrollment import EnrollmentCreate
+from app.core.schemas.enrollment import EnrollmentCreate, EnrollmentRead
 
 def create_enrollment(enrollment_in: EnrollmentCreate) -> Enrollment:    
     with get_db() as db:
@@ -35,7 +35,10 @@ def create_enrollment(enrollment_in: EnrollmentCreate) -> Enrollment:
         db.add(new_enrollment)
         db.commit()
         db.refresh(new_enrollment)
-        return new_enrollment
+        new_enrollment.student.name = student.user.name
+
+        
+        return EnrollmentRead.model_validate(new_enrollment)
 
 def get_enrollments_by_student(student_id: uuid.UUID) -> List[Enrollment]:
     with get_db() as db:

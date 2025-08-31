@@ -1,18 +1,13 @@
 from .user import User, UserRole
-from .attendance import Attendance
-from .course import Course
-from .enrollment import Enrollment
 from .student import Student
 from .teacher import Teacher
+from .course import Course
 from .course_schedule import CourseSchedule
+from .class_session import ClassSession
+from .enrollment import Enrollment
+from .attendance import Attendance
 
 __all__ = [
-    "User",
-    "UserRole",
-    "Attendance",
-    "Course",
-    "Enrollment",
-    "Student",
-    "Teacher",
-    "CourseSchedule"
+    "User", "UserRole", "Student", "Teacher", "Course", 
+    "CourseSchedule", "ClassSession", "Enrollment", "Attendance"
 ]

@@ -2,7 +2,6 @@ import bcrypt
 import datetime
 import jwt
 import fastapi
-from sqlalchemy.orm import Session
 
 from app.infra.config import settings
 from app.infra.db.connection import get_db
@@ -28,23 +27,23 @@ def create_access_token(data: dict):
 
 
 def get_current_user(
-    request: fastapi.Request, 
-    db: Session = fastapi.Depends(get_db)
+    request: fastapi.Request
 ) -> 'User':
-    token = request.cookies.get("access_token")
-    if not token:
-        raise fastapi.HTTPException(status_code=401, detail="Not authenticated")
+    with get_db() as db:
+        token = request.cookies.get("access_token")
+        if not token:
+            raise fastapi.HTTPException(status_code=401, detail="Not authenticated")
 
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        id: str = payload.get("sub")
-        if id is None:
-            raise fastapi.HTTPException(status_code=401, detail="Invalid token payload")
-    except jwt.PyJWTError:
-        raise fastapi.HTTPException(status_code=401, detail="Token has expired or is invalid")
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+            id: str = payload.get("sub")
+            if id is None:
+                raise fastapi.HTTPException(status_code=401, detail="Invalid token payload")
+        except jwt.PyJWTError:
+            raise fastapi.HTTPException(status_code=401, detail="Token has expired or is invalid")
 
-    user = db.query(User).filter(User.id == id).first()
-    if user is None:
-        raise fastapi.HTTPException(status_code=401, detail="User not found")
-    
-    return user
+        user = db.query(User).filter(User.id == id).first()
+        if user is None:
+            raise fastapi.HTTPException(status_code=401, detail="User not found")
+        
+        return user
