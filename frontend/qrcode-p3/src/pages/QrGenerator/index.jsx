@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import Header from "../../components/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
 
 function QrGenerator() {
+    const navigate = useNavigate();
     const [timeLeft, setTimeLeft] = useState(60);
     const [qrValue, setQrValue] = useState(`QR-${Date.now()}`);
     const qrCodeSize = 500;
@@ -52,8 +54,12 @@ function QrGenerator() {
                 <div className="bg-white p-3 rounded shadow">
                     <QRCodeSVG value={qrValue} size={qrCodeSize} />
                 </div>
-
-                <button className="btn btn-outline-dark mt-4" style={{ width: `${qrCodeSize + 30}px` }}>
+                
+                <button 
+                    className="btn btn-outline-dark mt-4" 
+                    style={{ width: `${qrCodeSize + 30}px` }}
+                    onClick={() => navigate('/professor/qr-code/report-generation')}
+                >
                     Encerrar aula e gerar relatório
                 </button>
 
