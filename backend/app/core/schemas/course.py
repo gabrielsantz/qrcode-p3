@@ -32,6 +32,8 @@ class CourseCreate(BaseModel):
     description: Optional[str] = None
     teacher_id: uuid.UUID
     schedules: list[ScheduleForCourseCreate]
+    start_date: datetime.date 
+    end_date: datetime.date
 
 class CourseUpdate(BaseModel):
     name: Optional[str] = None
@@ -42,6 +44,8 @@ class CourseRead(BaseModel):
     name: str
     description: Optional[str]
     teacher: TeacherInfo
+    start_date: datetime.date
+    end_date: datetime.date
     
     schedules: list[CourseScheduleRead] = []
 

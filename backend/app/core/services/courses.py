@@ -5,7 +5,9 @@ from fastapi import HTTPException, status
 
 from app.infra.db.connection import get_db
 from app.core.models import Course, Teacher, CourseSchedule
-from app.core.schemas.course import CourseCreate, CourseUpdate
+from app.core.schemas.course import CourseCreate, CourseUpdate, CourseRead
+from app.core.schemas.class_session import GenerateClassesRequest
+from app.core.services.class_session import generate_classes_from_schedules
 
 def get_course_by_id(db: Session, course_id: uuid.UUID) -> Course:
     course = (
@@ -30,19 +32,21 @@ def create_course(course_in: CourseCreate) -> Course:
         new_course = Course(
             name=course_in.name,
             description=course_in.description,
-            teacher_id=course_in.teacher_id
+            teacher_id=course_in.teacher_id,
+            start_date = course_in.start_date,
+            end_date = course_in.end_date
         )
         db.add(new_course)
 
-        if course_in.schedules:
-            for schedule_data in course_in.schedules:
-                new_schedule = CourseSchedule(
-                    course=new_course,
-                    day_of_week=schedule_data.day_of_week,
-                    start_time=schedule_data.start_time,
-                    end_time=schedule_data.end_time
-                )
-                db.add(new_schedule)
+
+        for schedule_data in course_in.schedules:
+            new_schedule = CourseSchedule(
+                course=new_course,
+                day_of_week=schedule_data.day_of_week,
+                start_time=schedule_data.start_time,
+                end_time=schedule_data.end_time
+            )
+            db.add(new_schedule)
 
         db.commit()
 
@@ -56,7 +60,15 @@ def create_course(course_in: CourseCreate) -> Course:
             .first()
         )
 
-        return new_course
+        db.refresh(new_course)
+
+        generate_classes_from_schedules(GenerateClassesRequest.model_validate({
+            "course_id": new_course.id,
+            "start_date": course_in.start_date,
+            "end_date": course_in.end_date
+        }))
+
+        return CourseRead.model_validate(new_course)
 
 def get_course(course_id: uuid.UUID) -> Course:
     with get_db() as db:
