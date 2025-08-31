@@ -1,0 +1,50 @@
+.grouped-attendance-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.date-group {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.date-header {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.subject-card {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px 25px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.subject-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.subject-name {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.subject-arrow {
+  font-size: 20px;
+  color: #aaa;
+}
