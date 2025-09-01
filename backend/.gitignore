@@ -4,3 +4,4 @@
 /alembic
 alembic.ini
 *cache*
+/venv
