@@ -9,6 +9,7 @@ import AttendanceHistory from "./AttendanceHistory/index.jsx";
 import ReportGeneration from "./ReportGeneration"
 import Reports from "./Reports"
 import PastReport from "./PastReport"
+import CoordinatorHomepage from "./CoordinatorHomepage";
 
 export  {
     Home,
@@ -21,6 +22,7 @@ export  {
     AttendanceHistory,
     ReportGeneration,
     Reports,
-    PastReport
+    PastReport,
+    CoordinatorHomepage
 }
 
