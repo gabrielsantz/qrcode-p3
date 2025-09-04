@@ -2,7 +2,7 @@ import './index.css';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
-import { Home, TeacherHomepage, QrReaderPage, StudentHomepage, LoginPage, RegisterPage, QrGenerator, AttendanceHistory, ReportGeneration, Reports, PastReport, CoordinatorHomepage, UserManagementPage, AllReportsPage } from './pages';
+import { Home, TeacherHomepage, QrReaderPage, StudentHomepage, LoginPage, RegisterPage, QrGenerator, AttendanceHistory, ReportGeneration, Reports, PastReport, CoordinatorHomepage, UserManagementPage, AllReportsPage, CheckDataPage } from './pages';
 
 
 export default function App() {
@@ -32,6 +32,7 @@ export default function App() {
         <Route path="/coordinator" element={<CoordinatorHomepage />} />
         <Route path="/coordinator/user-management" element={<UserManagementPage />} />
         <Route path="/coordinator/all-reports" element={<AllReportsPage />} />
+        <Route path="/coordinator/all-reports/check-data/:reportId" element={<CheckDataPage />} />
       {/* </Route> */}
 
     </Routes>

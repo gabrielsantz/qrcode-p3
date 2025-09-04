@@ -12,6 +12,7 @@ import PastReport from "./PastReport"
 import CoordinatorHomepage from "./CoordinatorHomepage";
 import UserManagementPage from "./UserManagement";
 import AllReportsPage from "./AllReports";
+import CheckDataPage from "./CheckReportData";
 
 export  {
     Home,
@@ -27,6 +28,7 @@ export  {
     PastReport,
     CoordinatorHomepage,
     UserManagementPage,
-    AllReportsPage
+    AllReportsPage,
+    CheckDataPage
 }
 

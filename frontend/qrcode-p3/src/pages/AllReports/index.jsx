@@ -51,7 +51,7 @@ const AllReportsPage = () => {
               
               <button
                 className="report-card"
-                // onClick={() => navigate(``)}
+                onClick={() => navigate(`/coordinator/all-reports/check-data/${report.id}`)}
               >
                 <div className="report-info">
                   <span className="report-subject-name">{report.materia}</span>
