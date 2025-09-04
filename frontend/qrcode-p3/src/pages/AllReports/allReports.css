@@ -1,0 +1,67 @@
+.professor-reports-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.report-date-group {
+  margin-bottom: 20px;
+}
+
+.report-date-header {
+  font-size: 1.1rem; /* 18px */
+  font-weight: 500;
+  color: #555;
+}
+
+.report-card {
+  /* Reset de estilos de botão */
+  background: none;
+  border: none;
+  font: inherit;
+  
+  /* Layout do card */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  
+  /* Estilos visuais do card */
+  padding: 25px 30px;
+  margin-bottom: 15px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.report-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* NOVO: Container para matéria e professor */
+.report-info {
+  display: flex;
+  align-items: baseline; /* Alinha pela base do texto */
+  gap: 15px;
+}
+
+.report-subject-name {
+  font-size: 1.75rem; /* ~28px */
+  font-weight: 700; /* Negrito */
+  color: #000;
+}
+
+.report-professor-name {
+  font-size: 1.1rem; /* ~18px */
+  font-weight: 400; /* Peso normal */
+  color: #6c757d; /* Cinza */
+}
+
+.report-arrow {
+  font-size: 1.75rem;
+  color: #ccc;
+}

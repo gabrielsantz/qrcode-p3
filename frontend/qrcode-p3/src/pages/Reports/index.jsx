@@ -27,7 +27,7 @@ const GroupedAttendancePage = () => {
   }, []);
 
   if (loading) {
-    return <div class = "loading"><h1>Carregando...</h1></div>;
+    return <div className = "loading"><h1>Carregando...</h1></div>;
   }
 
   let lastDate = null;

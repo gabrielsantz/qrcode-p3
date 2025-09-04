@@ -10,7 +10,8 @@ import ReportGeneration from "./ReportGeneration"
 import Reports from "./Reports"
 import PastReport from "./PastReport"
 import CoordinatorHomepage from "./CoordinatorHomepage";
-import UserManagementPage from "./UserManagement/index.jsx";
+import UserManagementPage from "./UserManagement";
+import AllReportsPage from "./AllReports";
 
 export  {
     Home,
@@ -25,6 +26,7 @@ export  {
     Reports,
     PastReport,
     CoordinatorHomepage,
-    UserManagementPage
+    UserManagementPage,
+    AllReportsPage
 }
 

@@ -30,7 +30,7 @@ function CoordinatorHomepage() {
             text="Verifique as dados de aulas passadas do IC"
             buttonLabel="Verificar"
             buttonVariant="primary"
-            // onClick={() => navigate("/student/qr-reader")}
+            onClick={() => navigate("/coordinator/all-reports")}
           />
 
           <CardOption 
