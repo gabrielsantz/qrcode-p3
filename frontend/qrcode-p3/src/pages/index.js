@@ -9,7 +9,7 @@ import AttendanceHistory from "./AttendanceHistory/index.jsx";
 import ReportGeneration from "./ReportGeneration"
 import Reports from "./Reports"
 import PastReport from "./PastReport"
-import CoordinatorHomepage from "./CoordinatorHomepage";
+import AdminHomepage from "./AdminHomepage/index.jsx";
 import UserManagementPage from "./UserManagement";
 import AllReportsPage from "./AllReports";
 import CheckDataPage from "./CheckReportData";
@@ -26,7 +26,7 @@ export  {
     ReportGeneration,
     Reports,
     PastReport,
-    CoordinatorHomepage,
+    AdminHomepage,
     UserManagementPage,
     AllReportsPage,
     CheckDataPage

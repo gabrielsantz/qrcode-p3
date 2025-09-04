@@ -4,20 +4,19 @@ import CardOption from '../../components/CardOption';
 import { BsBarChart } from "react-icons/bs";
 import { BsPersonAdd } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
-// import { useAuth } from "../../AuthContext";
+import { useAuth } from "../../AuthContext";
 
 
-function CoordinatorHomepage() {
+function AdminHomepage() {
   const navigate = useNavigate();
-//   const {user} = useAuth()
+  const {user} = useAuth()
 
   
   return (
     <>
       <Header />
       <div className="text-center mt-5 px-4">
-        {/* <h1>Bem-vindo, {user?.name ?? "Coordenador"} 👋</h1>  PARA QUANDO IMPLEMENTAR A ROLE*/}
-        <h1>Bem-vindo, Coordenador 👋</h1>
+        <h1>Painel de Gerenciamento - PresençaQR</h1>
         <p>O que deseja fazer?</p>
       </div>
 
@@ -30,7 +29,7 @@ function CoordinatorHomepage() {
             text="Verifique as dados de aulas passadas do IC"
             buttonLabel="Verificar"
             buttonVariant="primary"
-            onClick={() => navigate("/coordinator/all-reports")}
+            onClick={() => navigate("/admin/all-reports")}
           />
 
           <CardOption 
@@ -39,7 +38,7 @@ function CoordinatorHomepage() {
             text="Verifique e aprove perfis para utilizar o Sistema de Presença"
             buttonLabel="Analisar"
             buttonVariant="secondary"
-            onClick={() => navigate("/coordinator/user-management")}
+            onClick={() => navigate("/admin/user-management")}
           />
 
         </div>
@@ -48,4 +47,4 @@ function CoordinatorHomepage() {
   );
 }
 
-export default CoordinatorHomepage;
+export default AdminHomepage;

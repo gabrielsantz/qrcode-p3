@@ -22,6 +22,7 @@ function LoginPage({ onLoginSuccess }) {
       switch (me.role) {
         case 'student': navigate('/student/'); break;
         case 'teacher': navigate('/professor/'); break;
+        case 'admin': navigate('/admin/'); break;
         default: navigate('/');
       }
       if (onLoginSuccess) onLoginSuccess(me);

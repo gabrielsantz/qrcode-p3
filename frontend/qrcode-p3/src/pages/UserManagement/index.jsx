@@ -5,11 +5,8 @@ import './userManagement.css';
 
 // dados mockados
 const mockUsers = [
-  { id: 1, name: 'Ana Souza', role: 'Aluno', email: 'anasouza@ic.ufal.br' },
   { id: 2, name: 'Ranilson', role: 'Professor', email: 'ranilson@ic.ufal.br' },
-  { id: 3, name: 'Fábio Augusto', role: 'Aluno', email: 'fabioaugusto@ic.ufal.br' },
   { id: 4, name: 'M. Hozano', role: 'Professor', email: 'mhozano@ic.ufal.br' },
-  { id: 5, name: 'Antônio', role: 'Aluno', email: 'antonio@ic.ufal.br' },
 ];
 
 const UserManagementPage = () => {

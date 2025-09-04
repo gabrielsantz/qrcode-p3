@@ -2,7 +2,7 @@ import './index.css';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
-import { Home, TeacherHomepage, QrReaderPage, StudentHomepage, LoginPage, RegisterPage, QrGenerator, AttendanceHistory, ReportGeneration, Reports, PastReport, CoordinatorHomepage, UserManagementPage, AllReportsPage, CheckDataPage } from './pages';
+import { Home, TeacherHomepage, QrReaderPage, StudentHomepage, LoginPage, RegisterPage, QrGenerator, AttendanceHistory, ReportGeneration, Reports, PastReport, AdminHomepage, UserManagementPage, AllReportsPage, CheckDataPage } from './pages';
 
 
 export default function App() {
@@ -28,12 +28,12 @@ export default function App() {
         <Route path="/professor/reports/past-report/:reportId" element={<PastReport />} />
       </Route>
 
-      {/* <Route element={<ProtectedRoute allowedRoles={['coordinator']} />}> */}
-        <Route path="/coordinator" element={<CoordinatorHomepage />} />
-        <Route path="/coordinator/user-management" element={<UserManagementPage />} />
-        <Route path="/coordinator/all-reports" element={<AllReportsPage />} />
-        <Route path="/coordinator/all-reports/check-data/:reportId" element={<CheckDataPage />} />
-      {/* </Route> */}
+      <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+        <Route path="/admin" element={<AdminHomepage />} />
+        <Route path="/admin/user-management" element={<UserManagementPage />} />
+        <Route path="/admin/all-reports" element={<AllReportsPage />} />
+        <Route path="/admin/all-reports/check-data/:reportId" element={<CheckDataPage />} />
+      </Route>
 
     </Routes>
     );
