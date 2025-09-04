@@ -39,7 +39,7 @@ function CoordinatorHomepage() {
             text="Verifique e aprove perfis para utilizar o Sistema de Presença"
             buttonLabel="Analisar"
             buttonVariant="secondary"
-            // onClick={() => navigate("/student/attendance")}
+            onClick={() => navigate("/coordinator/user-management")}
           />
 
         </div>

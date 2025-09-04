@@ -2,7 +2,7 @@ import './index.css';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
-import { Home, TeacherHomepage, QrReaderPage, StudentHomepage, LoginPage, RegisterPage, QrGenerator, AttendanceHistory, ReportGeneration, Reports, PastReport, CoordinatorHomepage } from './pages';
+import { Home, TeacherHomepage, QrReaderPage, StudentHomepage, LoginPage, RegisterPage, QrGenerator, AttendanceHistory, ReportGeneration, Reports, PastReport, CoordinatorHomepage, UserManagementPage } from './pages';
 
 
 export default function App() {
@@ -30,6 +30,7 @@ export default function App() {
 
       {/* <Route element={<ProtectedRoute allowedRoles={['coordinator']} />}> */}
         <Route path="/coordinator" element={<CoordinatorHomepage />} />
+        <Route path="/coordinator/user-management" element={<UserManagementPage />} />
       {/* </Route> */}
 
     </Routes>
