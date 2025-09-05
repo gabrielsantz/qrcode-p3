@@ -5,6 +5,7 @@ from app.core.routes.enrollment import router as enrollments_router
 from app.core.routes.course_schedule import router as course_schedule_router
 from app.core.routes.qrcode import router as qrcode_router
 from app.core.routes.class_session import router as class_session_router
+from app.core.routes.student import router as student_router
 from fastapi.middleware.cors import CORSMiddleware
 
 api_router = APIRouter()
@@ -14,6 +15,7 @@ api_router.include_router(enrollments_router)
 api_router.include_router(course_schedule_router)
 api_router.include_router(qrcode_router)
 api_router.include_router(class_session_router)
+api_router.include_router(student_router)
 
 app = FastAPI(title="PresençaQR - UFAL")
 origins = [

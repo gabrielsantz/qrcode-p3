@@ -4,7 +4,7 @@ from sqlalchemy.orm import joinedload
 from fastapi import HTTPException, status
 
 from app.infra.db.connection import get_db
-from app.core.models import Enrollment, Student, Course
+from app.core.models import Enrollment, Student, Course, ClassSession, Attendance
 from app.core.schemas.enrollment import EnrollmentCreate, EnrollmentRead
 
 def create_enrollment(enrollment_in: EnrollmentCreate) -> Enrollment:    
@@ -37,6 +37,19 @@ def create_enrollment(enrollment_in: EnrollmentCreate) -> Enrollment:
         db.refresh(new_enrollment)
         new_enrollment.student.name = student.user.name
         new_enrollment.student.registration = student.user.registration
+
+        ## Cria as presenças iniciais para o aluno no curso
+        class_sessions = db.query(ClassSession).filter(ClassSession.course_id == course.id).all()
+        for cs in class_sessions:
+            attendance = Attendance(
+                student_id=student.id,
+                course_id=course.id,
+                class_session_id=cs.id,
+                present=False
+            )
+            db.add(attendance)
+            db.commit()
+
 
         
         return EnrollmentRead.model_validate(new_enrollment)

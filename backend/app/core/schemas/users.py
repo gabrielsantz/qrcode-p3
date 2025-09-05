@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
+import uuid
 
 from app.core.models import UserRole
 
@@ -16,6 +17,9 @@ class UserLogin(BaseModel):
     password: str
 
 class UserPublic(BaseModel):
+    id: uuid.UUID
+    student_id: Optional[uuid.UUID] = None
+    teacher_id: Optional[uuid.UUID] = None
     name: str
     role: UserRole
     is_active: bool

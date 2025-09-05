@@ -6,7 +6,7 @@ import fastapi
 from app.infra.config import settings
 from app.infra.db.connection import get_db
 
-from app.core.models import User
+from app.core.models import User, UserRole, Student, Teacher
 
 
 
@@ -46,4 +46,9 @@ def get_current_user(
         if user is None:
             raise fastapi.HTTPException(status_code=401, detail="User not found")
         
+        if(user.role == UserRole.STUDENT):
+            user.student_id = db.query(Student).filter(Student.user_id == user.id).first().id
+        elif(user.role == UserRole.TEACHER):
+            user.teacher_id = db.query(Teacher).filter(Teacher.user_id == user.id).first().id
+
         return user

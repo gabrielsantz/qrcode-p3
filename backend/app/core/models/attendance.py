@@ -20,7 +20,7 @@ class Attendance:
     class_session_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("class_sessions.id"))
     
     present: Mapped[bool] = mapped_column(nullable=False, server_default=text("true"))
-    marked_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    marked_at: Mapped[datetime] = mapped_column(init=False, nullable=True)
 
     student: Mapped["Student"] = relationship(back_populates="attendances")
     course_: Mapped["Course"] = relationship()
