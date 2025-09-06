@@ -77,12 +77,10 @@
   margin-left: 100px;
 }
 
-/* Cor para status "Presente" */
 .status-presente .status-indicator {
   background-color: #34c759;
 }
 
-/* Cor para status "Ausente" */
 .status-ausente .status-indicator {
   background-color: #ff3b30;
 }

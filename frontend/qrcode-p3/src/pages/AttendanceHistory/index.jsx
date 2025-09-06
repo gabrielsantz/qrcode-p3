@@ -1,56 +1,59 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../../api';
 import Header from '../../components/Header';
+import { useAuth } from '../../AuthContext';
 import './attendance.css';
 
-// simulação de dados
-const mockData = [
-  { id: 1, materia: 'Programação 3', data: '21/08/2025', status: 'Presente' },
-  { id: 2, materia: 'Projeto e Análise de Algoritmos', data: '21/08/2025', status: 'Presente' },
-  { id: 3, materia: 'Teoria da Computação', data: '20/08/2025', status: 'Ausente' },
-  { id: 4, materia: 'Programação 2', data: '19/08/2025', status: 'Presente' },
-  { id: 5, materia: 'Programação 3', data: '21/08/2025', status: 'Presente' },
-  { id: 6, materia: 'Projeto e Análise de Algoritmos', data: '21/08/2025', status: 'Presente' },
-  { id: 7, materia: 'Teoria da Computação', data: '20/08/2025', status: 'Ausente' },
-  { id: 8, materia: 'Programação 2', data: '19/08/2025', status: 'Presente' },
-  { id: 9, materia: 'Programação 3', data: '21/08/2025', status: 'Presente' },
-  { id: 10, materia: 'Projeto e Análise de Algoritmos', data: '21/08/2025', status: 'Presente' },
-  { id: 11, materia: 'Teoria da Computação', data: '20/08/2025', status: 'Ausente' },
-  { id: 12, materia: 'Programação 2', data: '19/08/2025', status: 'Presente' }
-];
-
 const AttendanceHistory = () => {
+  const { user } = useAuth();
   const [presencas, setPresencas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [materiaSelecionada, setMateriaSelecionada] = useState('');
   const [dataSelecionada, setDataSelecionada] = useState('');
 
   useEffect(() => {
-    // Função para buscar os dados da API
     const fetchPresencas = async () => {
       try {
-        // para quando conectar ao backend
-        // const response = await fetch('https://api.com/student/attendance');
-        // if (!response.ok) {
-        //   throw new Error('Não foi possível buscar os dados.');
-        // }
-        // const data = await response.json();
-        // setPresencas(data);
+        const response = await apiClient.get(`/student/attendances?student_id=${user.student_id}`);
+        const fetchedAttendances = response.data.attendances || [];
 
-        // dados mockados
-        await new Promise(resolve => setTimeout(resolve, 1000)); // simula um tempo de espera
-        setPresencas(mockData);
+        const sortedAttendances = fetchedAttendances.sort((a, b) => {
+          const dateA = new Date(a.marked_at || a.date);
+          const dateB = new Date(b.marked_at || b.date);
+          return dateB - dateA; 
+        });
 
+        setPresencas(sortedAttendances);
       } catch (err) {
-        setError(err.message);
+        if (err.response) {
+          console.error("Erro da API:", err.response.data);
+          setError(`Erro: ${err.response.status} - ${err.response.data.message || 'Não foi possível buscar os dados.'}`);
+        } else {
+          setError(err.message);
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPresencas();
-  }, []);
+    if (user?.student_id) {
+      fetchPresencas();
+    }
+  }, [user?.student_id]);
+
+  const formatarData = (dataString) => {
+    if (!dataString) return 'N/A';
+    const data = new Date(`${dataString}T00:00:00`);
+    return data.toLocaleDateString('pt-BR');
+  };
+
+  const formatarHora = (dataHoraString) => {
+    if (!dataHoraString) return '—';
+    const data = new Date(dataHoraString);
+    return data.toLocaleTimeString('pt-BR');
+  };
 
   if (loading) {
     return <div className="loading"><h1>Carregando histórico...</h1></div>;
@@ -60,7 +63,13 @@ const AttendanceHistory = () => {
     return <div className="container"><h1>Erro: {error}</h1></div>;
   }
 
-  const materiasUnicas = [...new Set(mockData.map(item => item.materia))];
+  const materiasUnicas = [...new Set(presencas.map(item => item.course_name))];
+
+  const presencasFiltradas = presencas.filter(item => {
+    const filtroMateriaOk = materiaSelecionada ? item.course_name === materiaSelecionada : true;
+    const filtroDataOk = dataSelecionada ? item.date === dataSelecionada : true;
+    return filtroMateriaOk && filtroDataOk;
+  });
 
   return (
     <>
@@ -69,12 +78,12 @@ const AttendanceHistory = () => {
       </div>
 
       <div className="attendance-container">
-        <h1 classname="attendance-title">Histórico de presenças</h1>
-        
+        <h1 className="attendance-title">Histórico de presenças</h1>
+
         <div className="filters-wrapper mb-4">
           <div className="filter-group">
             <label htmlFor="materia-select" className="filter-label">Matéria:</label>
-            <select 
+            <select
               id="materia-select"
               className="form-select"
               value={materiaSelecionada}
@@ -91,7 +100,7 @@ const AttendanceHistory = () => {
 
           <div className="filter-group">
             <label htmlFor="date-select" className="filter-label">Data:</label>
-            <input 
+            <input
               type="date"
               id="date-select"
               className="form-control"
@@ -100,42 +109,43 @@ const AttendanceHistory = () => {
             />
           </div>
         </div>
-        
+
         <table className="presence-table table table-striped">
           <thead>
             <tr>
-              <th>#</th>
+              <th>ID da Aula</th>
               <th>Matéria</th>
-              <th>Data</th>
+              <th>Data da Aula</th>
+              <th>Hora da Marcação</th> 
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            {presencas
-              .filter(item => {
-                const filtroMateriaOk = materiaSelecionada ? item.materia === materiaSelecionada : true;
+            {presencasFiltradas.map((item) => {
+              const statusTexto = item.present ? 'Presente' : 'Ausente';
+              const statusClasse = item.present ? 'presente' : 'ausente';
+              
+              const horaMarcacao = item.present ? formatarHora(item.marked_at) : '—';
 
-                const filtroDataOk = dataSelecionada ? item.data === dataSelecionada.split('-').reverse().join('/') : true;
-    
-                return filtroMateriaOk && filtroDataOk;
-              })
-              .map((item) => (
+              return (
                 <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.materia}</td>
-                  <td>{item.data}</td>
+                  <td>{item.id.substring(0, 8)}...</td>
+                  <td>{item.course_name}</td>
+                  <td>{formatarData(item.date)}</td>
+                  <td>{horaMarcacao}</td>
                   <td>
-                    <span className={`status status-${item.status.toLowerCase()}`}>
+                    <span className={`status status-${statusClasse}`}>
                       <span className="status-indicator"></span>
-                      {item.status}
+                      {statusTexto}
                     </span>
                   </td>
                 </tr>
-              ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
-  </>
+    </>
   );
 };
 
