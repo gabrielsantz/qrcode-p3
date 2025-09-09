@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'https://43e019808883.ngrok-free.app/api', 
+  baseURL: 'https://18.217.93.4/api', 
   withCredentials: true, 
 });
 
