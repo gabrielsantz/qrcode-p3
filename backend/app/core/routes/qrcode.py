@@ -10,7 +10,6 @@ router = APIRouter(prefix="/qrcode", tags=["QR Code"])
 
 
 @router.post("/generate-token", response_model=QRTokenResponse)
-## TODO: Refatorar para usar o class_session
 def generate_qr_token_route(
     request: QRTokenRequest,
     current_user: User = Depends(get_current_user)

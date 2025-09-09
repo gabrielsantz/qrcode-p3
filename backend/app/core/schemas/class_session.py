@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime, date, time
 from typing import Optional
+from .course import CourseRead
 from pydantic import BaseModel
 
 
@@ -16,8 +17,7 @@ class ClassSessionCreate(BaseModel):
 
 class ClassSessionRead(BaseModel):
     id: uuid.UUID
-    course_id: uuid.UUID
-    course_schedule_id: Optional[uuid.UUID]
+    course: CourseRead
     date: date
     start_time: time
     end_time: time

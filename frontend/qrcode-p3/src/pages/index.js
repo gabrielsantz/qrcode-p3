@@ -13,6 +13,7 @@ import AdminHomepage from "./AdminHomepage/index.jsx";
 import UserManagementPage from "./UserManagement";
 import AllReportsPage from "./AllReports";
 import CheckDataPage from "./CheckReportData";
+import ClassesPage from "./ClassesPage/index.jsx";
 
 export  {
     Home,
@@ -29,6 +30,7 @@ export  {
     AdminHomepage,
     UserManagementPage,
     AllReportsPage,
-    CheckDataPage
+    CheckDataPage,
+    ClassesPage
 }
 

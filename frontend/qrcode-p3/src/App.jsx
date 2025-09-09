@@ -2,7 +2,7 @@ import './index.css';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
-import { Home, TeacherHomepage, QrReaderPage, StudentHomepage, LoginPage, RegisterPage, QrGenerator, AttendanceHistory, ReportGeneration, Reports, PastReport, AdminHomepage, UserManagementPage, AllReportsPage, CheckDataPage } from './pages';
+import { Home, ClassesPage, TeacherHomepage, QrReaderPage, StudentHomepage, LoginPage, RegisterPage, QrGenerator, AttendanceHistory, ReportGeneration, Reports, PastReport, AdminHomepage, UserManagementPage, AllReportsPage, CheckDataPage } from './pages';
 
 
 export default function App() {
@@ -22,10 +22,11 @@ export default function App() {
 
       <Route element={<ProtectedRoute allowedRoles={['teacher']} />}>
         <Route path="/professor" element={<TeacherHomepage />} />
-        <Route path="/professor/qr-code" element={<QrGenerator />} />
+        <Route path="/professor/qr-code/:classSessionId" element={<QrGenerator />} />
         <Route path="/professor/qr-code/report-generation" element={<ReportGeneration />} />
         <Route path="/professor/reports" element={<Reports />} />
         <Route path="/professor/reports/past-report/:reportId" element={<PastReport />} />
+        <Route path="/professor/classes" element={<ClassesPage />} />
       </Route>
 
       <Route element={<ProtectedRoute allowedRoles={['admin']} />}>

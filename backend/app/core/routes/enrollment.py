@@ -23,6 +23,6 @@ def unenroll_student(enrollment_id: uuid.UUID):
 def read_enrollments_for_student(student_id: uuid.UUID):
     return enrollment_service.get_enrollments_by_student(student_id=student_id)
 
-@router.get("/courses/{course_id}/enrollments", response_model=List[EnrollmentRead], tags=["Aulas"])
+@router.get("/courses/{course_id}/enrollments", response_model=List[EnrollmentRead], tags=["Cursos"])
 def read_enrollments_for_course(course_id: uuid.UUID):
     return enrollment_service.get_enrollments_by_course(course_id=course_id)

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import apiClient from '../../api';
 import Header from '../../components/Header';
 import { useAuth } from '../../AuthContext';
-import './attendance.css';
 
 const AttendanceHistory = () => {
   const { user } = useAuth();
@@ -15,6 +14,11 @@ const AttendanceHistory = () => {
 
   useEffect(() => {
     const fetchPresencas = async () => {
+      if (!user?.student_id) {
+        setLoading(false);
+        setError("ID do estudante não encontrado. Faça login novamente.");
+        return;
+      }
       try {
         const response = await apiClient.get(`/student/attendances?student_id=${user.student_id}`);
         const fetchedAttendances = response.data.attendances || [];
@@ -22,7 +26,7 @@ const AttendanceHistory = () => {
         const sortedAttendances = fetchedAttendances.sort((a, b) => {
           const dateA = new Date(a.marked_at || a.date);
           const dateB = new Date(b.marked_at || b.date);
-          return dateB - dateA; 
+          return dateB - dateA;
         });
 
         setPresencas(sortedAttendances);
@@ -31,22 +35,20 @@ const AttendanceHistory = () => {
           console.error("Erro da API:", err.response.data);
           setError(`Erro: ${err.response.status} - ${err.response.data.message || 'Não foi possível buscar os dados.'}`);
         } else {
-          setError(err.message);
+          setError("Erro de conexão. Verifique sua internet e tente novamente.");
         }
       } finally {
         setLoading(false);
       }
     };
 
-    if (user?.student_id) {
-      fetchPresencas();
-    }
+    fetchPresencas();
   }, [user?.student_id]);
 
   const formatarData = (dataString) => {
     if (!dataString) return 'N/A';
     const data = new Date(`${dataString}T00:00:00`);
-    return data.toLocaleDateString('pt-BR');
+    return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
   };
 
   const formatarHora = (dataHoraString) => {
@@ -56,11 +58,25 @@ const AttendanceHistory = () => {
   };
 
   if (loading) {
-    return <div className="loading"><h1>Carregando histórico...</h1></div>;
+    return (
+      <div className="d-flex flex-column justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Carregando...</span>
+        </div>
+        <h4 className="mt-3">Carregando histórico...</h4>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="container"><h1>Erro: {error}</h1></div>;
+    return (
+      <div className="container mt-5">
+        <div className="alert alert-danger" role="alert">
+          <h4 className="alert-heading">Ocorreu um Erro!</h4>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
   }
 
   const materiasUnicas = [...new Set(presencas.map(item => item.course_name))];
@@ -73,23 +89,21 @@ const AttendanceHistory = () => {
 
   return (
     <>
-      <div className="header-container">
-        <Header />
-      </div>
+      <Header /> 
+      
+      <div className="container mt-4">
+        <h1 className="mb-4">Histórico de Presenças</h1>
 
-      <div className="attendance-container">
-        <h1 className="attendance-title">Histórico de presenças</h1>
-
-        <div className="filters-wrapper mb-4">
-          <div className="filter-group">
-            <label htmlFor="materia-select" className="filter-label">Matéria:</label>
+        <div className="row g-3 mb-4">
+          <div className="col-md-5">
+            <label htmlFor="materia-select" className="form-label">Filtrar por Matéria:</label>
             <select
               id="materia-select"
               className="form-select"
               value={materiaSelecionada}
               onChange={(e) => setMateriaSelecionada(e.target.value)}
             >
-              <option value="">Todas</option>
+              <option value="">Todas as matérias</option>
               {materiasUnicas.map(materia => (
                 <option key={materia} value={materia}>
                   {materia}
@@ -98,8 +112,8 @@ const AttendanceHistory = () => {
             </select>
           </div>
 
-          <div className="filter-group">
-            <label htmlFor="date-select" className="filter-label">Data:</label>
+          <div className="col-md-5">
+            <label htmlFor="date-select" className="form-label">Filtrar por Data:</label>
             <input
               type="date"
               id="date-select"
@@ -110,40 +124,40 @@ const AttendanceHistory = () => {
           </div>
         </div>
 
-        <table className="presence-table table table-striped">
-          <thead>
-            <tr>
-              <th>ID da Aula</th>
-              <th>Matéria</th>
-              <th>Data da Aula</th>
-              <th>Hora da Marcação</th> 
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {presencasFiltradas.map((item) => {
-              const statusTexto = item.present ? 'Presente' : 'Ausente';
-              const statusClasse = item.present ? 'presente' : 'ausente';
-              
-              const horaMarcacao = item.present ? formatarHora(item.marked_at) : '—';
-
-              return (
-                <tr key={item.id}>
-                  <td>{item.id.substring(0, 8)}...</td>
-                  <td>{item.course_name}</td>
-                  <td>{formatarData(item.date)}</td>
-                  <td>{horaMarcacao}</td>
-                  <td>
-                    <span className={`status status-${statusClasse}`}>
-                      <span className="status-indicator"></span>
-                      {statusTexto}
-                    </span>
+        <div className="table-responsive">
+          <table className="table table-striped table-hover align-middle">
+            <thead className="table-light">
+              <tr>
+                <th scope="col">Matéria</th>
+                <th scope="col">Data da Aula</th>
+                <th scope="col">Hora da Marcação</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {presencasFiltradas.length > 0 ? (
+                presencasFiltradas.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.course_name}</td>
+                    <td>{formatarData(item.date)}</td>
+                    <td>{item.present ? formatarHora(item.marked_at) : '—'}</td>
+                    <td>
+                      <span className={`badge ${item.present ? 'bg-success' : 'bg-danger'}`}>
+                        {item.present ? 'Presente' : 'Ausente'}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="text-center py-4">
+                    Nenhum registro encontrado para os filtros selecionados.
                   </td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );

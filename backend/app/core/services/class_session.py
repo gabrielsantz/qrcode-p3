@@ -2,13 +2,14 @@ import uuid
 from datetime import timedelta
 from typing import List
 from sqlalchemy import and_
+from sqlalchemy.orm import joinedload
 from fastapi import HTTPException, status
 
 from app.infra.db.connection import get_db
 from app.core.utils import class_session as class_utils
-from app.core.models import ClassSession, Course, CourseSchedule, Attendance
+from app.core.models import ClassSession, Course, CourseSchedule, Attendance, Teacher
 from app.core.schemas.class_session import (
-    ClassSessionCreate , GenerateClassesRequest
+    ClassSessionCreate , GenerateClassesRequest, ClassSessionRead
 )
 
 def create_class_session(class_in: ClassSessionCreate) -> ClassSession:
@@ -46,6 +47,23 @@ def create_class_session(class_in: ClassSessionCreate) -> ClassSession:
         db.commit()
         db.refresh(new_class)
         return new_class
+    
+def get_all_class_sessions() -> List[ClassSession]:
+    with get_db() as db:
+        classes = db.query(ClassSession).all()
+        return classes
+
+def get_classes_by_teacher(teacher_id: uuid.UUID) -> List[ClassSessionRead]:
+    with get_db() as db:
+        class_sessions = (
+            db.query(ClassSession)
+            .join(Course)
+            .filter(Course.teacher_id == teacher_id)
+            .order_by(ClassSession.date.desc())
+            .all()
+        )
+
+        return [ClassSessionRead.model_validate(cls) for cls in class_sessions]
 
 def generate_classes_from_schedules(request: GenerateClassesRequest) -> List[ClassSession]:
     with get_db() as db:

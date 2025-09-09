@@ -28,7 +28,7 @@ function TeacherHomepage() {
                 text="Gerar o QR Code da aula"
                 buttonLabel="Gerar"
                 buttonVariant="primary"
-                onClick={() => navigate("/professor/qr-code")}
+                onClick={() => navigate("/professor/classes")}
             />
 
             <CardOption
