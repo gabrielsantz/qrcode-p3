@@ -2,7 +2,7 @@ import './index.css';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
-import { Home, ClassesPage, TeacherHomepage, QrReaderPage, StudentHomepage, LoginPage, RegisterPage, QrGenerator, AttendanceHistory, ReportGeneration, Reports, PastReport, AdminHomepage, UserManagementPage, AllReportsPage, CheckDataPage } from './pages';
+import { Home, ClassesPage, TeacherHomepage, QrReaderPage, StudentHomepage, LoginPage, RegisterPage, QrGenerator, AttendanceHistory, ReportGeneration, Reports, PastReport, AdminHomepage, UserManagementPage, AllReportsPage, CheckDataPage, CoursesToEnroll } from './pages';
 
 
 export default function App() {
@@ -17,6 +17,7 @@ export default function App() {
         <Route path="/student" element={<StudentHomepage />} />
         {<Route path="/student/qr-reader" element={<QrReaderPage />} />}
         {<Route path="/student/attendance" element={<AttendanceHistory />} />}
+        {<Route path="/student/enroll" element={<CoursesToEnroll />} />}
       </Route>
 
 

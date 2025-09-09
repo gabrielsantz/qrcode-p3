@@ -41,6 +41,15 @@ function StudentHomepage() {
             onClick={() => navigate("/student/attendance")}
           />
 
+          <CardOption 
+            icon={<BsClockHistory />}
+            title="Matricular em matérias"
+            text="Veja as matérias disponíveis e faça sua matrícula"
+            buttonLabel="Matricular"
+            buttonVariant="success"
+            onClick={() => navigate("/student/enroll")}
+          />
+
         </div>
       </div>
     </>
