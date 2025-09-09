@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
 import { useAuth } from '../../AuthContext';
+import Header from '../../components/Header';
 
 function LoginPage({ onLoginSuccess }) {
   const { setUser } = useAuth();
@@ -34,7 +35,10 @@ function LoginPage({ onLoginSuccess }) {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+  <div className="d-flex flex-column vh-100">
+    <Header />
+
+    <div className="d-flex justify-content-center align-items-center flex-grow-1 white">
       <div className="card shadow p-4" style={{ maxWidth: '400px', width: '100%' }}>
         <h2 className="text-center mb-4">Login</h2>
         <form onSubmit={handleSubmit}>
@@ -69,7 +73,8 @@ function LoginPage({ onLoginSuccess }) {
         </form>
       </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default LoginPage;
