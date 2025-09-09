@@ -111,36 +111,36 @@ def scan_qr_code(scan_data: QRScanRequest, current_user: User) -> QRScanResponse
         ).first()
         
         if existing_attendance:
-            message = "Presença já foi marcada para esta aula" if existing_attendance.present else "Presença atualizada!"
             existing_attendance.present = True
             db.commit()
-            
-            return QRScanResponse(
-                success=True,
-                message=message,
-                student_name=student.user.name,
-                course_name=class_session.course.name,
-                class_title=class_session.title,
-                attendance_id=existing_attendance.id
-            )
         
+            return QRScanResponse(
+                id=existing_attendance.id,
+                student_id=existing_attendance.student_id,
+                course_id=class_session.course_id,
+                class_session_id=class_session.id,
+                present=True,
+                date=existing_attendance.date or datetime.utcnow(),
+                message="Presença já foi marcada para esta aula"
+            )
+
         new_attendance = Attendance(
             student_id=student.id,
             course_id=class_session.course_id,
-            class_session_id=class_session_id,
+            class_session_id=class_session.id,
             present=True
         )
-        
+
         db.add(new_attendance)
         db.commit()
         db.refresh(new_attendance)
-        
+
         return QRScanResponse(
-            id = new_attendance.id,
-            student_id = new_attendance.student_id,
-            course_id = new_attendance.course_id,
-            class_session_id = new_attendance.class_session_id,
-            present = True,
-            date = datetime.utcnow()
+            id=new_attendance.id,
+            student_id=new_attendance.student_id,
+            course_id=new_attendance.course_id,
+            class_session_id=new_attendance.class_session_id,
+            present=True,
+            date=new_attendance.date or datetime.utcnow(),
+            message="Presença registrada com sucesso"
         )
-    
