@@ -3,6 +3,7 @@ import Header from '../../components/Header';
 import CardOption from '../../components/CardOption';
 import { BsQrCodeScan } from "react-icons/bs";
 import { BsClockHistory } from "react-icons/bs";
+import { BsPersonLinesFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
 
@@ -42,12 +43,12 @@ function StudentHomepage() {
           />
 
           <CardOption 
-            icon={<BsClockHistory />}
-            title="Matricular em matérias"
-            text="Veja as matérias disponíveis e faça sua matrícula"
-            buttonLabel="Matricular"
+            icon={<BsPersonLinesFill />}
+            title="Gerenciar matrículas"
+            text="Veja suas matérias e faça novas matrículas"
+            buttonLabel="Gerenciar"
             buttonVariant="success"
-            onClick={() => navigate("/student/enroll")}
+            onClick={() => navigate("/student/enrollments")}
           />
 
         </div>
