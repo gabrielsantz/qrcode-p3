@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'https://18.217.93.4/api', 
-  withCredentials: true, 
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,  
 });
 
 export default apiClient;
