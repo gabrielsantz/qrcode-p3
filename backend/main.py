@@ -7,7 +7,7 @@ from app.api.class_session.controller import router as class_session_router
 from app.api.student.controller import router as student_router
 from fastapi.middleware.cors import CORSMiddleware
 
-api_router = APIRouter()
+api_router = APIRouter(prefix="/api")
 api_router.include_router(authn_router)
 api_router.include_router(courses_router)
 api_router.include_router(enrollments_router)
@@ -28,4 +28,4 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(api_router, prefix="/api") 
+app.include_router(api_router, prefix="/v1") 
