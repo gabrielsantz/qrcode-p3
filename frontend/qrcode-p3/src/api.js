@@ -1,8 +1,34 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'https://18.217.93.4/api', 
-  withCredentials: true, 
+  baseURL: 'http://localhost:8000/v1/api', 
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
+
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('access_token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default apiClient;

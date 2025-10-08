@@ -13,27 +13,44 @@ function LoginPage({ onLoginSuccess }) {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
-    setIsLoading(true);
-    setError(null);
-    try {
-      await apiClient.post('/auth/token', { email, password });
-      const { data: me } = await apiClient.get('/auth/me');
-      setUser(me);
-      switch (me.role) {
-        case 'student': navigate('/student/'); break;
-        case 'teacher': navigate('/professor/'); break;
-        case 'admin': navigate('/admin/'); break;
-        default: navigate('/');
-      }
-      if (onLoginSuccess) onLoginSuccess(me);
-    } catch (err) {
-      setError(err.response?.data?.detail || 'Erro ao fazer login. Tente novamente.');
-    } finally {
-      setIsLoading(false);
+  event.preventDefault();
+  setIsLoading(true);
+  setError(null);
+  
+  try {
+    const { data: loginData } = await apiClient.post('/auth/token', { 
+      email, 
+      password 
+    });
+    
+    localStorage.setItem('access_token', loginData.access_token);
+    
+    const { data: me } = await apiClient.get('/auth/me');
+    setUser(me);
+    
+    switch (me.role) {
+      case 'student': 
+        navigate('/student/'); 
+        break;
+      case 'teacher': 
+        navigate('/professor/'); 
+        break;
+      case 'admin': 
+        navigate('/admin/'); 
+        break;
+      default: 
+        navigate('/');
     }
-  };
+    
+    if (onLoginSuccess) onLoginSuccess(me);
+    
+  } catch (err) {
+    setError(err.response?.data?.detail || 'Erro ao fazer login. Tente novamente.');
+  } finally {
+    setIsLoading(false);
+  }
 
+};
   return (
   <div className="d-flex flex-column vh-100">
     <Header />
