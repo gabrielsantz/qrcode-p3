@@ -8,7 +8,7 @@ from fastapi import HTTPException, status
 from app.infra.db.connection import get_db
 from app.core.utils import class_session as class_utils
 from app.core.models import ClassSession, Course, CourseSchedule, Attendance, Teacher
-from app.core.schemas.class_session import (
+from app.api.class_session.schemas import (
     ClassSessionCreate , GenerateClassesRequest, ClassSessionRead
 )
 
@@ -103,7 +103,7 @@ def generate_classes_from_schedules(request: GenerateClassesRequest) -> List[Cla
                             end_time=schedule.end_time,
                             title=f"Aula - {current_date.strftime('%d/%m/%Y')}",
                         )
-                        db.add(new_class)
+                        create_class_session(new_class)
                         created_classes.append(new_class)
 
             current_date += timedelta(days=1)

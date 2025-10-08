@@ -5,7 +5,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import joinedload
 
 from app.core.models import User, ClassSession, Course, Teacher, UserRole, Student, Enrollment, Attendance
-from app.core.schemas.qrcode import QRTokenRequest, QRTokenResponse, QRScanRequest, QRScanResponse
+from app.api.qrcode.schemas import QRTokenRequest, QRTokenResponse, QRScanRequest, QRScanResponse
 from app.infra.db.connection import get_db
 from app.infra.config import settings
 

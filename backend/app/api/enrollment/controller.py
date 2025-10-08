@@ -3,8 +3,8 @@ from typing import List
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from app.core.schemas.enrollment import EnrollmentCreate, EnrollmentRead
-from app.core.services import enrollments as enrollment_service
+from app.api.enrollment.schemas import EnrollmentCreate, EnrollmentRead
+from app.api.enrollment import services as enrollment_service
 from app.infra.db.connection import get_db
 
 router = APIRouter()

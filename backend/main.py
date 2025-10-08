@@ -1,18 +1,16 @@
 from fastapi import FastAPI, APIRouter
-from app.core.routes.auth import router as authn_router
-from app.core.routes.course import router as courses_router
-from app.core.routes.enrollment import router as enrollments_router
-from app.core.routes.course_schedule import router as course_schedule_router
-from app.core.routes.qrcode import router as qrcode_router
-from app.core.routes.class_session import router as class_session_router
-from app.core.routes.student import router as student_router
+from app.api.auth.controller import router as authn_router
+from app.api.course.controller import router as courses_router
+from app.api.enrollment.controller import router as enrollments_router
+from app.api.qrcode.controller import router as qrcode_router
+from app.api.class_session.controller import router as class_session_router
+from app.api.student.controller import router as student_router
 from fastapi.middleware.cors import CORSMiddleware
 
 api_router = APIRouter()
 api_router.include_router(authn_router)
 api_router.include_router(courses_router)
 api_router.include_router(enrollments_router)
-api_router.include_router(course_schedule_router)
 api_router.include_router(qrcode_router)
 api_router.include_router(class_session_router)
 api_router.include_router(student_router)

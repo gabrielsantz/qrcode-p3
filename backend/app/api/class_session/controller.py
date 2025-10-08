@@ -3,12 +3,12 @@ from typing import List
 from fastapi import APIRouter, Depends, status
 from pydantic import model_validator
 
-from app.core.schemas.class_session import (
+from app.api.class_session.schemas import (
     ClassSessionCreate,
     ClassSessionRead,
     GenerateClassesRequest
 )
-from app.core.services import class_session as class_service
+from app.api.class_session import services as class_service
 from app.core.security import get_current_user
 from app.core.models import User
 
