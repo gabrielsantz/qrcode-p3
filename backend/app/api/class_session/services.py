@@ -2,7 +2,6 @@ import uuid
 from datetime import timedelta
 from typing import List
 from sqlalchemy import and_
-from sqlalchemy.orm import joinedload
 from fastapi import HTTPException, status
 
 from app.infra.db.connection import get_db
@@ -103,7 +102,7 @@ def generate_classes_from_schedules(request: GenerateClassesRequest) -> List[Cla
                             end_time=schedule.end_time,
                             title=f"Aula - {current_date.strftime('%d/%m/%Y')}",
                         )
-                        create_class_session(new_class)
+                        db.add(new_class)
                         created_classes.append(new_class)
 
             current_date += timedelta(days=1)

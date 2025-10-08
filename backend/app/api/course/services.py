@@ -1,3 +1,4 @@
+from operator import and_
 import uuid
 from typing import List
 from sqlalchemy.orm import joinedload, Session
@@ -28,6 +29,18 @@ def create_course(course_in: CourseCreate) -> Course:
         teacher = db.query(Teacher).filter(Teacher.id == course_in.teacher_id).first()
         if not teacher:
             raise HTTPException(status_code=404, detail="Professor não encontrado")
+
+        existing_course = db.query(Course).filter(
+            Course.name == course_in.name,
+            Course.teacher_id == course_in.teacher_id,
+            Course.start_date == course_in.start_date,
+            Course.end_date == course_in.end_date
+        ).first()
+        if existing_course:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Já existe um curso com este nome, professor e datas"
+            )
 
         new_course = Course(
             name=course_in.name,
