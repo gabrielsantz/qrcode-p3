@@ -56,7 +56,6 @@ function QrGenerator() {
         return () => clearInterval(timer);
     }, [timeLeft, isLoading, fetchQrToken]);
 
-
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
@@ -76,15 +75,11 @@ function QrGenerator() {
         return null;
     };
 
-
     return (
         <div className="d-flex flex-column vh-100 bg-light">
             <Header />
-
             <div className="d-flex flex-column justify-content-center align-items-center flex-grow-1">
-                
                 <h4 className="mb-2">{formatTime(timeLeft)}</h4>
-
                 <div className="progress mb-4" style={{ height: "20px", width: `${qrCodeSize + 30}px` }}>
                     <div
                         className="progress-bar progress-bar-striped bg-success"
@@ -93,15 +88,13 @@ function QrGenerator() {
                     >
                     </div>
                 </div>
-
                 <div className="bg-white p-3 rounded shadow">
                     {renderQrCode()}
                 </div>
-                
                 <button 
                     className="btn btn-outline-dark mt-4" 
                     style={{ width: `${qrCodeSize + 30}px` }}
-                    onClick={() => navigate('/professor/qr-code/report-generation')}
+                    onClick={() => navigate(`/professor/qr-code/report-generation/${classSessionId}`)}
                 >
                     Encerrar aula e gerar relatório
                 </button>
