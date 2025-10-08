@@ -23,10 +23,14 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && originalRequest.url !== '/auth/token') {
+      console.log('Token inválido ou expirado em uma rota protegida. Redirecionando...');
       localStorage.removeItem('access_token');
       window.location.href = '/login';
     }
+
     return Promise.reject(error);
   }
 );
