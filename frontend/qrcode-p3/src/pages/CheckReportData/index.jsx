@@ -1,44 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../../components/Header';
 import './checkReportData.css';
+import apiClient from '../../api';
+import { Spinner, Alert, Container, Table, Button } from 'react-bootstrap';
 
-// dados mockados
-const mockReportDatabase = {
-  '1': {
-    materia: 'Programação 3',
-    professor: 'Ranilson Paiva',
-    statistics: {
-      presentStudents: '34 x 23',
-      subtitle: 'Primeira aula x Aula atual',
-      presencePercentage: '63%',
-      averageArrivalTime: '15:26',
-    },
-    alunos: [
-      { id: 1, nome: 'Ana Carolina', matricula: '22442313', chegada: '15:20' },
-      { id: 2, nome: 'Bruno Costa', matricula: '432312343', chegada: '15:20' },
-      { id: 3, nome: 'Carlos de Andrade', matricula: '12345678', chegada: '15:21' },
-    ],
-  },
-  '2': {
-    materia: 'Programação 2',
-    professor: 'Mario Hozano',
-    statistics: {
-      presentStudents: '30 x 25',
-      subtitle: 'Primeira aula x Aula atual',
-      presencePercentage: '83%',
-      averageArrivalTime: '13:35',
-    },
-    alunos: [
-      { id: 1, nome: 'Ana Carolina', matricula: '22442313', chegada: '13:31' },
-      { id: 2, nome: 'Bruno Costa', matricula: '432312343', chegada: '13:32' },
-      { id: 3, nome: 'Carlos de Andrade', matricula: '12345678', chegada: '13:32' },
-    ],
-  }
-  // ... outros relatórios
-};
-
-// sub-componente para os cards de estatística
 const StatCard = ({ title, value, subtitle }) => (
   <div className="stat-card">
     <span className="stat-title">{title}</span>
@@ -48,49 +14,112 @@ const StatCard = ({ title, value, subtitle }) => (
 );
 
 const CheckDataPage = () => {
-  const { reportId } = useParams(); // pega o ID da URL
-  const [reportData, setReportData] = useState(null);
+  const { classSessionId } = useParams();
+  const [sessionData, setSessionData] = useState(null);
+  const [attendances, setAttendances] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // simula a busca de dados para o relatório específico
-    setTimeout(() => {
-      const data = mockReportDatabase[reportId];
-      if (data) {
-        setReportData(data);
+    const fetchReportData = async () => {
+      if (!classSessionId) {
+        setError("ID do relatório não encontrado na URL.");
+        setLoading(false);
+        return;
       }
-      setLoading(false);
-    }, 1000);
-  }, [reportId]);
+      try {
+        const [sessionResponse, attendanceResponse] = await Promise.all([
+          apiClient.get(`/class_session/${classSessionId}`),
+          apiClient.get(`/attendance/class_session/${classSessionId}`)
+        ]);
+
+        setSessionData(sessionResponse.data);
+        setAttendances(attendanceResponse.data || []);
+      } catch (err) {
+        console.error("Erro ao buscar dados do relatório:", err);
+        setError("Não foi possível carregar os dados do relatório.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReportData();
+  }, [classSessionId]);
+
+  const statistics = useMemo(() => {
+    if (!attendances || attendances.length === 0) {
+      return {
+        presentStudents: '0',
+        presencePercentage: '0%',
+        averageArrivalTime: 'N/A',
+      };
+    }
+
+    const presentStudentsList = attendances.filter(a => a.attended);
+    const presentCount = presentStudentsList.length;
+    const totalStudents = attendances.length;
+
+    const presencePercentage = totalStudents > 0 ? ((presentCount / totalStudents) * 100).toFixed(0) + '%' : '0%';
+
+    let averageArrivalTime = 'N/A';
+    
+    const studentsForAverage = presentStudentsList.filter(student => student.arrival_time);
+    const countForAverage = studentsForAverage.length;
+
+    if (countForAverage > 0) {
+      const totalSeconds = studentsForAverage.reduce((acc, student) => {
+        const timeParts = student.arrival_time.split(':');
+        const seconds = (+timeParts[0]) * 3600 + (+timeParts[1]) * 60 + (+timeParts[2]);
+        return acc + seconds;
+      }, 0);
+
+      const avgSeconds = totalSeconds / countForAverage;
+      const hours = Math.floor(avgSeconds / 3600).toString().padStart(2, '0');
+      const minutes = Math.floor((avgSeconds % 3600) / 60).toString().padStart(2, '0');
+      averageArrivalTime = `${hours}:${minutes}`;
+    }
+    
+    return {
+      presentStudents: presentCount.toString(),
+      presencePercentage,
+      averageArrivalTime,
+    };
+  }, [attendances]);
 
   const handleSavePDF = () => {
     alert('Implementar a função de salvar como PDF!');
   };
 
   if (loading) {
-    return <div className="loading"><h1>Carregando relatório...</h1></div>;
+    return (
+        <div className="text-center mt-5">
+            <Spinner animation="border" />
+            <p className="mt-2">Carregando relatório...</p>
+        </div>
+    );
   }
 
-  if (!reportData) {
-    return <div className="loading"><h1>Relatório não encontrado.</h1></div>;
+  if (error || !sessionData) {
+    return (
+        <Container className="mt-4">
+            <Alert variant="danger">{error || 'Relatório não encontrado.'}</Alert>
+        </Container>
+    );
   }
-
-  const { materia, professor, statistics, alunos } = reportData;
 
   return (
     <>
       <Header />
-      <div className="report-stats-container">
+      <Container className="mt-4 report-stats-container">
         <div className="report-header">
-          <span className="report-materia">{materia}</span>
-          <span className="report-professor">Prof. {professor}</span>
+          <span className="report-materia">{sessionData.course?.name}</span>
+          <span className="report-professor">Prof. {sessionData.course?.teacher?.name}</span>
         </div>
 
         <div className="stats-grid">
           <StatCard 
-            title="Quantidade de alunos presentes" 
+            title="Alunos presentes" 
             value={statistics.presentStudents}
-            subtitle={statistics.subtitle}
           />
           <StatCard 
             title="Porcentagem de presença" 
@@ -102,31 +131,34 @@ const CheckDataPage = () => {
           />
         </div>
 
-        <table className="table table-striped report-table">
+        <h3 className="mt-5 mb-3">Lista de Chamada</h3>
+        <Table striped bordered hover responsive>
           <thead>
             <tr>
               <th>Nome</th>
               <th>Matrícula</th>
               <th>Chegada</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            {alunos.map((aluno) => (
-              <tr key={aluno.id}>
-                <td>{aluno.nome}</td>
-                <td>{aluno.matricula}</td>
-                <td>{aluno.chegada}</td>
+            {attendances.map((aluno) => (
+              <tr key={aluno.student_registration}>
+                <td>{aluno.student_name}</td>
+                <td>{aluno.student_registration}</td>
+                <td>{aluno.arrival_time || '--:--'}</td>
+                <td>{aluno.attended ? 'Presente' : 'Ausente'}</td>
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
 
         <div className="pdf-button-container">
-          <button onClick={handleSavePDF} className="btn-save-pdf-main">
+          <Button variant="primary" onClick={handleSavePDF}>
             Salvar como PDF
-          </button>
+          </Button>
         </div>
-      </div>
+      </Container>
     </>
   );
 };

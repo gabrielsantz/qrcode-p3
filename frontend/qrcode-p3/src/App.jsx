@@ -34,7 +34,7 @@ export default function App() {
         <Route path="/admin" element={<AdminHomepage />} />
         <Route path="/admin/user-management" element={<UserManagementPage />} />
         <Route path="/admin/all-reports" element={<AllReportsPage />} />
-        <Route path="/admin/all-reports/check-data/:reportId" element={<CheckDataPage />} />
+        <Route path="/admin/all-reports/check-data/:classSessionId" element={<CheckDataPage />} />
       </Route>
 
     </Routes>

@@ -34,12 +34,16 @@ class User:
     student: Mapped[Optional["Student"]] = relationship(
         back_populates="user",
         lazy="joined",
-        uselist=False  
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True
     )
     teacher: Mapped[Optional["Teacher"]] = relationship(
         back_populates="user",
         lazy="joined",
-        uselist=False 
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True
     )
     
     @property

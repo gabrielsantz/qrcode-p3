@@ -46,12 +46,12 @@
   font-weight: 500;
 }
 
-.role-aluno {
+.role-student {
   background-color: #d4edda;
   color: #155724;
 }
 
-.role-professor {
+.role-teacher {
   background-color: #e2d9f3;
   color: #492a7e;
 }

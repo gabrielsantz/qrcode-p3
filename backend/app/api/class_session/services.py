@@ -45,6 +45,19 @@ def create_class_session(class_in: ClassSessionCreate) -> ClassSession:
         db.refresh(new_class)
         return new_class
     
+def get_all_class_sessions() -> List[ClassSessionRead]:
+    with get_db() as db:
+        class_sessions = (
+            db.query(ClassSession)
+            .options(
+                joinedload(ClassSession.course).joinedload(Course.teacher).joinedload(Teacher.user)
+            )
+            .order_by(ClassSession.date.desc())
+            .all()
+        )
+
+        return [ClassSessionRead.model_validate(cls) for cls in class_sessions]
+    
 def get_class_session(class_id: uuid.UUID) -> ClassSessionRead:
     with get_db() as db:
         class_session = (

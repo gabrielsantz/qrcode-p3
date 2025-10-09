@@ -55,37 +55,3 @@ def authenticate_user(email: str, password: str) -> UserPublic | None:
         return existing_user
     
 
-def activate_user(user_id: str, current_user: 'User'):
-    if current_user.role != UserRole.ADMIN:
-        raise fastapi.HTTPException(
-            status_code=fastapi.status.HTTP_403_FORBIDDEN,
-            detail="Apenas administradores podem ativar usuários."
-        )
-    
-    with get_db() as db:
-        user = db.query(User).filter(User.id == user_id).first()
-        if not user:
-            raise fastapi.HTTPException(
-                status_code=fastapi.status.HTTP_404_NOT_FOUND,
-                detail="Usuário não encontrado."
-            )
-        
-        if user.is_active:
-            raise fastapi.HTTPException(
-                status_code=fastapi.status.HTTP_400_BAD_REQUEST,
-                detail="O usuário já está ativo."
-            )
-        
-        if user.role not in [UserRole.STUDENT, UserRole.TEACHER]:
-            raise fastapi.HTTPException(
-                status_code=fastapi.status.HTTP_400_BAD_REQUEST,
-                detail="Apenas estudantes ou professores podem ser ativados."
-            )
-        
-        
-        user.is_active = True
-        
-        db.commit()
-        db.refresh(user)
-        
-        return user

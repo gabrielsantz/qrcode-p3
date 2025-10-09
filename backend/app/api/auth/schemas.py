@@ -20,6 +20,7 @@ class UserPublic(BaseModel):
     id: uuid.UUID
     name: str
     role: UserRole
+    email: str
     student_id: Optional[uuid.UUID] = None
     teacher_id: Optional[uuid.UUID] = None
     is_active: bool
@@ -31,7 +32,8 @@ class UserPublic(BaseModel):
             'id': self.id,
             'name': self.name,
             'role': self.role,
-            'is_active': self.is_active
+            'email': self.email,
+            'is_active': self.is_active,
         }
         
         if self.role == UserRole.STUDENT:

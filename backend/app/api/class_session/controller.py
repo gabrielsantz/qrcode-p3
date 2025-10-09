@@ -19,6 +19,10 @@ def create_class(
 ):    
     return class_session_service.create_class_session(class_in)
 
+@router.get("/", response_model=List[ClassSessionRead])
+def get_all_classes():
+    return class_session_service.get_all_class_sessions()
+
 @router.get("/{class_id}", response_model=ClassSessionRead)
 def get_class_by_id(class_id: uuid.UUID):
     return class_session_service.get_class_session(class_id)

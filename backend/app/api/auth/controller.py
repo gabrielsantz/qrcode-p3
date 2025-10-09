@@ -45,9 +45,6 @@ def login_for_access_token_route(
     
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.post("/activate", status_code=fastapi.status.HTTP_200_OK)
-def activate_user(user_id: str, current_user: 'User' = Depends(get_current_user)):
-    auth_service.activate_user(user_id=user_id, current_user=current_user)
 
 @router.get("/me", response_model=UserPublic)
 def read_current_user(current_user: 'User' = Depends(get_current_user)):
