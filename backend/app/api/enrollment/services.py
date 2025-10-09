@@ -5,7 +5,7 @@ from fastapi import HTTPException, status
 
 from app.infra.db.connection import get_db
 from app.core.models import Enrollment, Student, Course, ClassSession, Attendance
-from app.core.schemas.enrollment import EnrollmentCreate, EnrollmentRead
+from app.api.enrollment.schemas import EnrollmentCreate, EnrollmentRead
 
 def create_enrollment(enrollment_in: EnrollmentCreate) -> Enrollment:    
     with get_db() as db:
@@ -95,3 +95,5 @@ def delete_enrollment(enrollment_id: uuid.UUID) -> None:
         db.delete(enrollment)
         db.commit()
         return
+    
+

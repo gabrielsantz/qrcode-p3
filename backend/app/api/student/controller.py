@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 import uuid
 from app.core.models import User
 from app.core.security import get_current_user
-from app.core.services.student import get_attendances_for_student
-from app.core.schemas.student import StudentAttendanceResponse
+from app.api.student.services import get_attendances_for_student
+from app.api.student.schemas import StudentAttendanceResponse
 
 router = APIRouter(prefix="/student", tags=["Estudante"])
 

@@ -37,14 +37,11 @@ const GroupedAttendancePage = () => {
       <Header />
       <div className="grouped-attendance-container">
         {attendanceRecords.map(record => {
-          // verifica se a data do registro atual é diferente da última data
           const showDateHeader = record.data !== lastDate;
           
-          // atualiza a última data para a data do registro atual
           lastDate = record.data;
 
           return (
-            // React.Fragment para agrupar o cabeçalho e o card sem adicionar uma div extra
             <React.Fragment key={record.id}>
               {showDateHeader && (
                 <div className="date-group">

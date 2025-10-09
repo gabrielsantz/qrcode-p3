@@ -1,95 +1,109 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import apiClient from '../../api';
 import Header from '../../components/Header';
-import './reportGeneration.css';
+import { Container, Table, Button, Badge, Card } from 'react-bootstrap';
 
-// dados mockados
-const mockData = {
-  materia: 'Programação 3',
-  alunos: [
-    { id: 1, nome: 'Ana Carolina', matricula: '22442313', chegada: '15:20' },
-    { id: 2, nome: 'Bruno Costa', matricula: '432312343', chegada: '15:20' },
-    { id: 3, nome: 'Carlos de Andrade', matricula: '12345678', chegada: '15:21' },
-    { id: 4, nome: 'Daniela Ferreira', matricula: '56382892', chegada: '15:21' },
-    { id: 5, nome: 'Eduardo Martins', matricula: '62801846', chegada: '15:22' },
-    { id: 6, nome: 'Fernanda Gonçalves', matricula: '62820512', chegada: '15:22' },
-    { id: 7, nome: 'Gabriel Lima', matricula: '97251846', chegada: '15:25' },
-    { id: 8, nome: 'Helena Oliveira', matricula: '62583512', chegada: '15:26' },
-    { id: 9, nome: 'Igor Pereira', matricula: '21456254', chegada: '15:26' },
-  ]
-};
+const ReportGenerationPage = () => {
+    const { classSessionId } = useParams(); 
 
-const AttendanceListPage = () => {
-  const [materia, setMateria] = useState('');
-  const [alunos, setAlunos] = useState([]);
-  const [loading, setLoading] = useState(true);
+    const [sessionInfo, setSessionInfo] = useState(null);
+    const [attendances, setAttendances] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    //simula um tempo de espera 
-    setTimeout(() => {
-      setMateria(mockData.materia);
-      setAlunos(mockData.alunos);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    useEffect(() => {
+        const fetchAttendanceData = async () => {
+            if (!classSessionId) {
+                setError("ID da aula não encontrado na URL.");
+                setLoading(false);
+                return;
+            }
 
-  const handleSaveToSystem = () => {
-    console.log('Salvando no sistema...', alunos);
-    alert('Dados salvos no sistema com sucesso!');
-  };
+            try {
+                const [attendancesResponse, sessionResponse] = await Promise.all([
+                    apiClient.get(`/attendance/class_session/${classSessionId}`),
+                    apiClient.get(`/class_session/${classSessionId}`) 
+                ]);
+                
 
-  const handleSaveAsPDF = () => {
+                setAttendances(attendancesResponse.data || []);
+
+                setSessionInfo(sessionResponse.data.course); 
+
+            } catch (err) {
+                console.error("Erro ao buscar dados da chamada:", err);
+                setError("Não foi possível carregar os dados. Tente novamente.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAttendanceData();
+    }, [classSessionId]);
+
+    const handleSaveAsPDF = () => {
     console.log('Gerando PDF...');
-    alert('Função de gerar PDF a ser implementada!');
-  };
+      alert('Função de gerar PDF a ser implementada!');
+      };
 
-  if (loading) {
-    return <div class = "loading"><h1>Carregando lista de presença...</h1></div>;
-  }
+    
+    return (
+        <>
+            <Header />
+            <Container className="mt-4">
+                <h1 className="mb-3">Relatório de Presença</h1>
+                
+                <Card className="mb-4">
+                    <Card.Header as="h5">
+                        Detalhes da Aula
+                    </Card.Header>
+                    <Card.Body>
+                        <Card.Title as="h4">{sessionInfo?.name || 'Matéria não identificada'}</Card.Title>
+                        <Card.Text>
+                            Lista de alunos presentes na aula.
+                        </Card.Text>
+                    </Card.Body>
+                </Card>
 
-  return (
-    <>
-      <div className="header-container">
-        <Header />
-      </div>
-
-      <div className="attendance-list-container">
-        <div className="materia-header">
-          <label htmlFor="materia-display">Matéria:</label>
-          <div id="materia-display" className="materia-display-box">
-            {materia}
-          </div>
-        </div>
-
-        <table className="table table-bordered presence-list-table table table-striped">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Matrícula</th>
-              <th>Chegada</th>
-            </tr>
-          </thead>
-          <tbody>
-            {alunos.map((aluno) => (
-              <tr key={aluno.id}>
-                <td>{aluno.nome}</td>
-                <td>{aluno.matricula}</td>
-                <td>{aluno.chegada}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <div className="action-buttons">
-          <button onClick={handleSaveToSystem} className="btn-custom btn-save-system">
-            Salvar no sistema
-          </button>
-          <button onClick={handleSaveAsPDF} className="btn-custom btn-save-pdf">
-            Salvar como PDF
-          </button>
-        </div>
-      </div>
-    </>
-  );
+                <Table striped bordered hover responsive>
+                    <thead>
+                        <tr>
+                            <th className="text-center">Nome do Aluno</th>
+                            <th className="text-center">Matrícula</th>
+                            <th className="text-center">Horário de Chegada</th>
+                            <th className="text-center">Presença</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {attendances.length > 0 ? (
+                            attendances.map((att, index) => (
+                                <tr key={index}>
+                                    <td className="text-center">{att.student_name}</td>
+                                    <td className="text-center">{att.student_registration}</td>
+                                    <td className="text-center">{att.arrival_time || '--'}</td>
+                                    <td className="text-center">
+                                      <Badge bg={att.attended ? 'success' : 'danger'} pill>
+                                        {att.attended ? 'Presente' : 'Ausente'}
+                                      </Badge>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4" className="text-center">Nenhum aluno na lista de chamada para esta aula.</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </Table>
+                <div className="text-end mt-3">
+                    <Button variant="primary" className="me-2" onClick={handleSaveAsPDF}>
+                        Salvar como PDF
+                    </Button>
+                </div>
+            </Container>
+        </>
+    );
 };
 
-export default AttendanceListPage;
+export default ReportGenerationPage;

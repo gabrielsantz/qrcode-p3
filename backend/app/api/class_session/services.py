@@ -1,14 +1,13 @@
 import uuid
 from datetime import timedelta
 from typing import List
-from sqlalchemy import and_
 from sqlalchemy.orm import joinedload
 from fastapi import HTTPException, status
 
 from app.infra.db.connection import get_db
 from app.core.utils import class_session as class_utils
 from app.core.models import ClassSession, Course, CourseSchedule, Attendance, Teacher
-from app.core.schemas.class_session import (
+from app.api.class_session.schemas import (
     ClassSessionCreate , GenerateClassesRequest, ClassSessionRead
 )
 
@@ -20,11 +19,9 @@ def create_class_session(class_in: ClassSessionCreate) -> ClassSession:
 
  
         existing_class = db.query(ClassSession).filter(
-            and_(
-                ClassSession.course_id == class_in.course_id,
-                ClassSession.date == class_in.date,
-                ClassSession.start_time == class_in.start_time 
-            )
+            ClassSession.course_id == class_in.course_id,
+            ClassSession.date == class_in.date,
+            ClassSession.start_time == class_in.start_time
         ).first()
 
         if existing_class:
@@ -48,10 +45,34 @@ def create_class_session(class_in: ClassSessionCreate) -> ClassSession:
         db.refresh(new_class)
         return new_class
     
-def get_all_class_sessions() -> List[ClassSession]:
+def get_all_class_sessions() -> List[ClassSessionRead]:
     with get_db() as db:
-        classes = db.query(ClassSession).all()
-        return classes
+        class_sessions = (
+            db.query(ClassSession)
+            .options(
+                joinedload(ClassSession.course).joinedload(Course.teacher).joinedload(Teacher.user)
+            )
+            .order_by(ClassSession.date.desc())
+            .all()
+        )
+
+        return [ClassSessionRead.model_validate(cls) for cls in class_sessions]
+    
+def get_class_session(class_id: uuid.UUID) -> ClassSessionRead:
+    with get_db() as db:
+        class_session = (
+            db.query(ClassSession)
+            .options(
+                joinedload(ClassSession.course).joinedload(Course.teacher).joinedload(Teacher.user)
+            )
+            .filter(ClassSession.id == class_id)
+            .first()
+        )
+
+        if not class_session:
+            raise HTTPException(status_code=404, detail="Aula não encontrada")
+
+        return ClassSessionRead.model_validate(class_session)
 
 def get_classes_by_teacher(teacher_id: uuid.UUID) -> List[ClassSessionRead]:
     with get_db() as db:
@@ -68,9 +89,7 @@ def get_classes_by_teacher(teacher_id: uuid.UUID) -> List[ClassSessionRead]:
 def generate_classes_from_schedules(request: GenerateClassesRequest) -> List[ClassSession]:
     with get_db() as db:
         schedules = db.query(CourseSchedule).filter(
-            and_(
-                CourseSchedule.course_id == request.course_id,
-            )
+            CourseSchedule.course_id == request.course_id,
         ).all()
 
         if not schedules:
@@ -86,12 +105,10 @@ def generate_classes_from_schedules(request: GenerateClassesRequest) -> List[Cla
             for schedule in schedules:
                 if class_utils.to_day_of_week(current_date.weekday()) == schedule.day_of_week:
                     existing_class = db.query(ClassSession).filter(
-                        and_(
-                            ClassSession.course_id == request.course_id,
-                            ClassSession.date == current_date,
-                            ClassSession.start_time == schedule.start_time,
-                            ClassSession.end_time == schedule.end_time
-                        )
+                        ClassSession.course_id == request.course_id,
+                        ClassSession.date == current_date,
+                        ClassSession.start_time == schedule.start_time,
+                        ClassSession.end_time == schedule.end_time
                     ).first()
 
                     if not existing_class:
