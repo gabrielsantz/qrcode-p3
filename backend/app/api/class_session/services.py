@@ -89,9 +89,7 @@ def get_classes_by_teacher(teacher_id: uuid.UUID) -> List[ClassSessionRead]:
 def generate_classes_from_schedules(request: GenerateClassesRequest) -> List[ClassSession]:
     with get_db() as db:
         schedules = db.query(CourseSchedule).filter(
-            and_(
-                CourseSchedule.course_id == request.course_id,
-            )
+            CourseSchedule.course_id == request.course_id,
         ).all()
 
         if not schedules:
@@ -107,12 +105,10 @@ def generate_classes_from_schedules(request: GenerateClassesRequest) -> List[Cla
             for schedule in schedules:
                 if class_utils.to_day_of_week(current_date.weekday()) == schedule.day_of_week:
                     existing_class = db.query(ClassSession).filter(
-                        and_(
-                            ClassSession.course_id == request.course_id,
-                            ClassSession.date == current_date,
-                            ClassSession.start_time == schedule.start_time,
-                            ClassSession.end_time == schedule.end_time
-                        )
+                        ClassSession.course_id == request.course_id,
+                        ClassSession.date == current_date,
+                        ClassSession.start_time == schedule.start_time,
+                        ClassSession.end_time == schedule.end_time
                     ).first()
 
                     if not existing_class:
