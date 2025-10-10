@@ -3,7 +3,6 @@ import datetime
 from typing import Optional
 from app.core.models.course_schedule import DayOfWeek
 from app.core.models import Teacher
-from .course_schedule import CourseScheduleRead
 from pydantic import BaseModel, model_validator
 
 class TeacherInfo(BaseModel):
@@ -39,6 +38,20 @@ class CourseUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
 
+class CourseScheduleCreate(BaseModel):
+    day_of_week: DayOfWeek
+    start_time: datetime.time
+    end_time: Optional[datetime.time] = None
+
+class CourseScheduleRead(BaseModel):
+    id: uuid.UUID
+    day_of_week: DayOfWeek
+    start_time: datetime.time
+    end_time: Optional[datetime.time]
+
+    class Config:
+        from_attributes = True 
+        
 class CourseRead(BaseModel):
     id: uuid.UUID
     name: str
@@ -51,3 +64,4 @@ class CourseRead(BaseModel):
 
     class Config:
         from_attributes = True 
+

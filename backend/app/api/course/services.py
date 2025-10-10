@@ -1,3 +1,4 @@
+from operator import and_
 import uuid
 from typing import List
 from sqlalchemy.orm import joinedload, Session
@@ -5,9 +6,9 @@ from fastapi import HTTPException, status
 
 from app.infra.db.connection import get_db
 from app.core.models import Course, Teacher, CourseSchedule
-from app.core.schemas.course import CourseCreate, CourseUpdate, CourseRead
-from app.core.schemas.class_session import GenerateClassesRequest
-from app.core.services.class_session import generate_classes_from_schedules
+from app.api.course.schemas import CourseCreate, CourseUpdate, CourseRead, CourseScheduleCreate, CourseScheduleRead
+from app.api.class_session.schemas import GenerateClassesRequest
+from app.api.class_session.services import generate_classes_from_schedules
 
 def get_course_by_id(db: Session, course_id: uuid.UUID) -> Course:
     course = (
@@ -28,6 +29,18 @@ def create_course(course_in: CourseCreate) -> Course:
         teacher = db.query(Teacher).filter(Teacher.id == course_in.teacher_id).first()
         if not teacher:
             raise HTTPException(status_code=404, detail="Professor não encontrado")
+
+        existing_course = db.query(Course).filter(
+            Course.name == course_in.name,
+            Course.teacher_id == course_in.teacher_id,
+            Course.start_date == course_in.start_date,
+            Course.end_date == course_in.end_date
+        ).first()
+        if existing_course:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Já existe um curso com este nome, professor e datas"
+            )
 
         new_course = Course(
             name=course_in.name,
@@ -128,7 +141,54 @@ def update_course(course_id: uuid.UUID, course_update: CourseUpdate) -> Course:
 
 def delete_course(course_id: uuid.UUID) -> None:
     with get_db() as db:
-        course = get_course_by_id(course_id=course_id)
+        course = get_course_by_id(db=db, course_id=course_id)
         db.delete(course)
+        db.commit()
+        return
+    
+
+def create_schedule_for_course(course_id: uuid.UUID, schedule_in: CourseScheduleCreate) -> CourseSchedule:
+    with get_db() as db:
+        course = db.query(Course).filter(Course.id == course_id).first()
+        if not course:
+            raise HTTPException(status_code=404, detail="Curso não encontrado")
+
+        existing_schedule = db.query(CourseSchedule).filter_by(
+            course_id=course_id,
+            day_of_week=schedule_in.day_of_week,
+            start_time=schedule_in.start_time
+        ).first()
+
+        if existing_schedule:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Este horário já existe para este curso"
+            )
+
+        new_schedule = CourseSchedule(
+            course_id=course_id,
+            **schedule_in.dict() 
+        )
+        db.add(new_schedule)
+        db.commit()
+        db.refresh(new_schedule)
+        return new_schedule
+
+def get_schedules_for_course(course_id: uuid.UUID) -> list[CourseSchedule]:
+    with get_db() as db:
+        course = db.query(Course).filter(Course.id == course_id).first()
+        if not course:
+            raise HTTPException(status_code=404, detail="Curso não encontrado")
+        
+        schedules = db.query(CourseSchedule).filter(CourseSchedule.course_id == course_id).order_by(CourseSchedule.day_of_week, CourseSchedule.start_time).all()
+        return schedules
+
+def delete_schedule(schedule_id: uuid.UUID) -> None:
+    with get_db() as db:
+        schedule = db.query(CourseSchedule).filter(CourseSchedule.id == schedule_id).first()
+        if not schedule:
+            raise HTTPException(status_code=404, detail="Horário não encontrado")
+        
+        db.delete(schedule)
         db.commit()
         return

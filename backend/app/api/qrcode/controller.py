@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 
 from app.core.models import User
 from app.core.security import get_current_user
-from app.core.schemas.qrcode import QRTokenRequest, QRTokenResponse, QRScanRequest, QRScanResponse
-from app.core.services.qrcode import generate_qr_token, scan_qr_code
+from app.api.qrcode.schemas import QRTokenRequest, QRTokenResponse, QRScanRequest, QRScanResponse
+from app.api.qrcode.services import generate_qr_token, scan_qr_code
 
 router = APIRouter(prefix="/qrcode", tags=["QR Code"])
 

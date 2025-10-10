@@ -1,7 +1,7 @@
 from app.infra.db.connection import get_db
 from app.core.models import Attendance, Student
 from sqlalchemy.orm import joinedload
-from app.core.schemas.student import StudentAttendanceResponse
+from app.api.student.schemas import StudentAttendanceResponse
 import datetime
 
 def get_attendances_for_student(student_id: int) -> StudentAttendanceResponse:

@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, date, time
 from typing import Optional
-from .course import CourseRead
+from ..course.schemas import CourseRead
 from pydantic import BaseModel
 
 

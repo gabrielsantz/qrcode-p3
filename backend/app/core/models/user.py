@@ -21,7 +21,7 @@ class UserRole(enum.Enum):
 @table_registry.mapped_as_dataclass(init=False)
 class User:
     __tablename__ = "users"
-
+    
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(nullable=False)
     registration: Mapped[Optional[str]] = mapped_column(unique=True)
@@ -30,28 +30,26 @@ class User:
     role: Mapped[UserRole] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(nullable=False, server_default=text("false"))
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
-
-    student: Mapped[Optional["Student"]] = relationship(back_populates="user")
-    teacher: Mapped[Optional["Teacher"]] = relationship(back_populates="user")
-
-    def __init__(self, name:str, email: str, hashed_password: str, role: UserRole, registration: str | None = None):
-        if not name:
-            raise ValueError("O nome é obrigatório.")
-        if not email:
-            raise ValueError("O e-mail é obrigatório.")
-        if not hashed_password:
-            raise ValueError("A senha é obrigatória.")
-        if not role:
-            raise ValueError("A role é obrigatória.")
-
-        if role == UserRole.STUDENT and not registration:
-            raise ValueError("A matrícula é obrigatória para alunos.")
-        
-        if role != UserRole.STUDENT and registration is not None:
-            raise ValueError("A matrícula só é permitida para alunos.")
-
-        self.name = name
-        self.registration = registration
-        self.email = email
-        self.hashed_password = hashed_password
-        self.role = role
+    
+    student: Mapped[Optional["Student"]] = relationship(
+        back_populates="user",
+        lazy="joined",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
+    teacher: Mapped[Optional["Teacher"]] = relationship(
+        back_populates="user",
+        lazy="joined",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
+    
+    @property
+    def student_id(self) -> Optional[uuid.UUID]:
+        return self.student.id if self.student else None
+    
+    @property
+    def teacher_id(self) -> Optional[uuid.UUID]:
+        return self.teacher.id if self.teacher else None

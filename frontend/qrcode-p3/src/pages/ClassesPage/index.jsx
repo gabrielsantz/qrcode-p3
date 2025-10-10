@@ -2,15 +2,14 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
 import Header from '../../components/Header';
-import { useAuth } from '../../AuthContext'; // Assumindo que você usa um AuthContext para pegar o usuário logado
+import { useAuth } from '../../AuthContext';
 
-// Recomendo usar react-bootstrap para componentes como Acordeão e Listas
-// Instale com: npm install react-bootstrap bootstrap
+
 import { Accordion, ListGroup, Button, Spinner, Alert } from 'react-bootstrap';
 
 const ClassesPage = () => {
     const navigate = useNavigate();
-    const { user } = useAuth(); // Pega o usuário (e o teacher_id) do contexto de autenticação
+    const { user } = useAuth();
 
     const [classSessions, setClassSessions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -25,7 +24,7 @@ const ClassesPage = () => {
             }
 
             try {
-                const response = await apiClient.get(`/classes/teacher/${user.teacher_id}`);
+                const response = await apiClient.get(`/class_session/teacher/${user.teacher_id}`);
                 setClassSessions(response.data || []);
             } catch (err) {
                 console.error("Erro ao buscar aulas:", err);
@@ -38,7 +37,6 @@ const ClassesPage = () => {
         fetchClassSessions();
     }, [user?.teacher_id]);
 
-    // Agrupa as aulas por nome da matéria para exibição organizada
     const groupedSessions = useMemo(() => {
         return classSessions.reduce((acc, session) => {
             const courseName = session.course?.name || 'Matéria não especificada';
