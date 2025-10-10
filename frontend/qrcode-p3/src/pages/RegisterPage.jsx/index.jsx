@@ -25,7 +25,6 @@ function RegisterPage({ onRegisterSuccess }) {
         
       const response = await apiClient.post('/auth/register', body);
 
-      alert('Registro realizado com sucesso! Você será redirecionado para a página de login.');
 
       navigate('/login');
 
