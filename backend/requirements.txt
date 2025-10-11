@@ -6,3 +6,5 @@ pyjwt
 pydantic_settings
 bcrypt
 alembic
+jinja2
+weasyprint
