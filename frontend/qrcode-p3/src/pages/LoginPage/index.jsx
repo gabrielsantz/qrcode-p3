@@ -43,6 +43,9 @@ function LoginPage({ onLoginSuccess }) {
       setUser(me);
       if (onLoginSuccess) onLoginSuccess(me);
     } catch (err) {
+      if (err.response?.status === 403) {
+        navigate('/pending-activation'); 
+      }
       setError(err.response?.data?.detail || 'Erro ao fazer login. Tente novamente.');
     } finally {
       setIsLoading(false);

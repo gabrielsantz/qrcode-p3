@@ -29,7 +29,13 @@ def login_for_access_token_route(
             detail="E-mail ou senha incorretos",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
+    if not user.is_active:
+        raise fastapi.HTTPException(
+            status_code=fastapi.status.HTTP_403_FORBIDDEN,
+            detail="Conta não ativada",
+        )
+
     token_data = {
         "sub": str(user.id),
         "role": user.role.value
