@@ -1,7 +1,8 @@
 import uuid
-from typing import List
-from fastapi import APIRouter, Depends, status
+import io
+import fastapi
 
+from typing import List
 from app.api.class_session.schemas import (
     ClassSessionCreate,
     ClassSessionRead,
@@ -11,9 +12,9 @@ from app.api.class_session import services as class_session_service
 from app.core.security import get_current_user
 from app.core.models import User
 
-router = APIRouter(prefix="/class_session", tags=["Aulas"])
+router = fastapi.APIRouter(prefix="/class_session", tags=["Aulas"])
 
-@router.post("/", response_model=ClassSessionRead, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=ClassSessionRead, status_code=fastapi.status.HTTP_201_CREATED)
 def create_class(
     class_in: ClassSessionCreate
 ):    
@@ -37,10 +38,24 @@ def generate_classes_from_schedules(
 ):
     return class_session_service.generate_classes_from_schedules(request)
 
+@router.get("/generate_pdf/{class_id}")
+def generate_class_pdf(class_id: uuid.UUID):
+    pdf_bytes, filename = class_session_service.generate_class_pdf(class_id)
 
-@router.delete("/{class_id}", status_code=status.HTTP_204_NO_CONTENT)
+    pdf_file = io.BytesIO(pdf_bytes)
+
+    return fastapi.responses.StreamingResponse(
+        pdf_file,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        }
+    )
+
+
+@router.delete("/{class_id}", status_code=fastapi.status.HTTP_204_NO_CONTENT)
 def delete_class(
     class_id: uuid.UUID,
-    current_user: User = Depends(get_current_user)
+    current_user: User = fastapi.Depends(get_current_user)
 ):
     class_session_service.delete_class_session(class_id)

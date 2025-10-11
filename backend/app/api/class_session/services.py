@@ -1,15 +1,22 @@
 import uuid
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import List
 from sqlalchemy.orm import joinedload
 from fastapi import HTTPException, status
 
 from app.infra.db.connection import get_db
 from app.core.utils import class_session as class_utils
-from app.core.models import ClassSession, Course, CourseSchedule, Attendance, Teacher
+from app.core.models import ClassSession, Course, CourseSchedule, Attendance, Teacher, Student
 from app.api.class_session.schemas import (
     ClassSessionCreate , GenerateClassesRequest, ClassSessionRead
 )
+import weasyprint
+import jinja2
+from pathlib import Path
+
+TEMPLATE_DIR = Path(__file__).parent.parent.parent / "core" / "utils"
+template_loader = jinja2.FileSystemLoader(searchpath=TEMPLATE_DIR)
+template_env = jinja2.Environment(loader=template_loader)
 
 def create_class_session(class_in: ClassSessionCreate) -> ClassSession:
     with get_db() as db:
@@ -44,6 +51,33 @@ def create_class_session(class_in: ClassSessionCreate) -> ClassSession:
         db.commit()
         db.refresh(new_class)
         return new_class
+    
+def generate_class_pdf(class_id: uuid.UUID) -> tuple[bytes, str]:
+    with get_db() as db:
+        class_session = (
+            db.query(ClassSession)
+            .options(
+                joinedload(ClassSession.course).joinedload(Course.teacher).joinedload(Teacher.user),
+                joinedload(ClassSession.attendances).joinedload(Attendance.student).joinedload(Student.user)
+            )
+            .filter(ClassSession.id == class_id)
+            .first()
+        )
+
+        if not class_session:
+            raise HTTPException(status_code=404, detail="Aula não encontrada")
+        
+        template = template_env.get_template("template.html")
+        html_content = template.render(
+            session=class_session,
+            current_date=datetime.now().strftime('%d/%m/%Y')
+        )
+
+        pdf_bytes = weasyprint.HTML(string=html_content).write_pdf()
+
+        filename = f"Relatorio_{class_session.course.name}_{class_session.date}.pdf"
+        
+        return pdf_bytes, filename
     
 def get_all_class_sessions() -> List[ClassSessionRead]:
     with get_db() as db:
