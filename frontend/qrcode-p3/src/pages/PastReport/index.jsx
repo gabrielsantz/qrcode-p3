@@ -59,8 +59,13 @@ const PastReportsPage = () => {
     alert('Função de gerar PDF a ser implementada!');
   };
 
-  if (loading) {
-    return <div className="loading"><h1>Carregando lista de presença...</h1></div>;
+    if (loading) {
+    return (
+      <div className="d-flex flex-column vh-100 justify-content-center align-items-center">
+        <Spinner animation="border" role="status" />
+        <p className="mt-3">Carregando lista de presença...</p>
+      </div>
+    );
   }
 
   return (

@@ -92,10 +92,10 @@ const CheckDataPage = () => {
 
   if (loading) {
     return (
-        <div className="text-center mt-5">
-            <Spinner animation="border" />
-            <p className="mt-2">Carregando relatório...</p>
-        </div>
+      <div className="d-flex flex-column vh-100 justify-content-center align-items-center">
+        <Spinner animation="border" role="status" />
+        <p className="mt-3">Carregando relatório...</p>
+      </div>
     );
   }
 

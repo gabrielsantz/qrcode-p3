@@ -121,16 +121,14 @@ const EnrollmentPage = () => {
   };
 
   const CourseList = ({ courses, onButtonClick, buttonText, buttonClass, emptyMessage, loading, error }) => {
-    if (loading) {
-      return (
-        <div className="text-center p-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Carregando...</span>
+      if (loading) {
+        return (
+          <div className="d-flex flex-column vh-100 justify-content-center align-items-center">
+            <Spinner animation="border" role="status" />
+            <p className="mt-3">Carregando matérias...</p>
           </div>
-          <p className="mt-2">Carregando matérias...</p>
-        </div>
-      );
-    }
+        );
+      }
 
     if (error) {
       return <div className="alert alert-danger">{error}</div>;

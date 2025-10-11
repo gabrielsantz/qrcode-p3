@@ -59,12 +59,10 @@ const ClassesPage = () => {
 
     if (loading) {
         return (
-            <div className="text-center mt-5">
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Carregando...</span>
-                </Spinner>
-                <p className="mt-2">Carregando suas aulas...</p>
-            </div>
+        <div className="d-flex flex-column vh-100 justify-content-center align-items-center">
+            <Spinner animation="border" role="status" />
+            <p className="mt-3">Carregando suas aulas...</p>
+        </div>
         );
     }
 

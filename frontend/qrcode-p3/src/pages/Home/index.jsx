@@ -37,13 +37,14 @@ function Home() {
   }, [user, loading, navigate]);
 
 
-  if (loading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <Spinner animation="border" />
-      </div>
-    );
-  }
+    if (loading) {
+      return (
+        <div className="d-flex flex-column vh-100 justify-content-center align-items-center">
+          <Spinner animation="border" role="status" />
+          <p className="mt-3">Carregando...</p>
+        </div>
+      );
+    }
 
 
   return (

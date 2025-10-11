@@ -59,15 +59,12 @@ const AttendanceHistory = () => {
 
   if (loading) {
     return (
-      <div className="d-flex flex-column justify-content-center align-items-center" style={{ height: '100vh' }}>
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Carregando...</span>
-        </div>
-        <h4 className="mt-3">Carregando histórico...</h4>
+      <div className="d-flex flex-column vh-100 justify-content-center align-items-center">
+        <Spinner animation="border" role="status" />
+        <p className="mt-3">Carregando histórico...</p>
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="container mt-5">

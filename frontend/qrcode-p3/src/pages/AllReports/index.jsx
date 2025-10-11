@@ -40,14 +40,14 @@ const AllReportsPage = () => {
     }, {});
   }, [reports]);
 
-  if (loading) {
-    return (
-        <div className="text-center mt-5">
-            <Spinner animation="border" />
-            <p className="mt-2">Carregando relatórios...</p>
+    if (loading) {
+      return (
+        <div className="d-flex flex-column vh-100 justify-content-center align-items-center">
+          <Spinner animation="border" role="status" />
+          <p className="mt-3">Carregando relatórios...</p>
         </div>
-    );
-  }
+      );
+    }
 
   if (error) {
     return <Container className="mt-4"><Alert variant="danger">{error}</Alert></Container>;
