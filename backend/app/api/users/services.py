@@ -86,17 +86,15 @@ def update_user(user_id: str, user_in: UserUpdate, current_user: 'User') -> User
 
     if not user_db:
         raise fastapi.HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=fastapi.status.HTTP_404_NOT_FOUND,
             detail="Usuário não encontrado"
         )
 
     update_data = user_in.model_dump(exclude_unset=True)
 
-    # 3. Itera sobre os dados recebidos e atualiza o objeto do banco
     for key, value in update_data.items():
         setattr(user_db, key, value)
 
-    # 4. Salva as mudanças no banco
     db.add(user_db)
     db.commit()
     db.refresh(user_db)
