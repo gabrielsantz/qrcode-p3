@@ -22,7 +22,6 @@ class QRScanResponse(BaseModel):
     course_id: uuid.UUID
     class_session_id: uuid.UUID
     present: bool = True
-    date: datetime
     
 
     class Config:
