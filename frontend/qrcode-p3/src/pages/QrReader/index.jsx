@@ -1,56 +1,74 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState } from 'react';
 import { Scanner } from '@yudiel/react-qr-scanner';
 import Header from '../../components/Header';
 import './style.css';
 import apiClient from '../../api';
-import { useCallback } from 'react'; // Import useCallback
+import { Spinner } from 'react-bootstrap';
+
+import ScanSuccess from '../../components/ScanFeedback/ScanSuccess';
+import ScanError from '../../components/ScanFeedback/ScanError';
 
 function QrReaderPage() {
+  const [scanState, setScanState] = useState('scanning'); 
+  const [feedbackMessage, setFeedbackMessage] = useState('');
 
-  const sendQrCodeData = useCallback(async (scannedToken) => {
-    if (!scannedToken) return; 
+  const sendQrCodeData = async (scannedToken) => {
+    if (!scannedToken || scanState === 'loading') return;
 
-    try { 
+    setScanState('loading');
+    try {
       const response = await apiClient.post('/qrcode/scan', { token: scannedToken });
-
-
-      if (response.status !== 200) {
-        throw new Error(`Failed to send QR code data. Status: ${response.status}`);
-      }
-
-      const result = response.data; 
-      console.log('QR code data sent successfully:', result);
-      alert(`Success: ${result.message}`);
-
+      setFeedbackMessage(response.data.detail || 'Presença confirmada!');
+      setScanState('success');
     } catch (error) {
-      console.error('Error sending QR code data:', error);
-
-      const errorMessage = error.response?.data?.detail || error.message;
-      alert(`Error: ${errorMessage}`);
+      setFeedbackMessage(error.response?.data?.detail || 'QR Code inválido ou expirado.');
+      setScanState('error');
     }
-  }, []); 
+  };
+
+  const handleRetry = () => {
+    setScanState('scanning');
+    setFeedbackMessage('');
+  };
+
+  const renderContent = () => {
+    switch (scanState) {
+      case 'loading':
+        return (
+          <div className="text-center text-white">
+            <Spinner animation="border" role="status" variant="light" />
+            <p className="lead mt-3">Processando sua presença...</p>
+          </div>
+        );
+      case 'success':
+        return <ScanSuccess message={feedbackMessage} />;
+      case 'error':
+        return <ScanError message={feedbackMessage} onRetry={handleRetry} />;
+      case 'scanning':
+      default:
+        return (
+          <>
+            <Scanner
+              onScan={(result) => sendQrCodeData(result[0].rawValue)}
+              components={{ finder: false }}
+            />
+            <div className="overlay">
+              <div className="mask"><div className="frame"></div></div>
+              <div className="instructions text-white text-center">
+                <h1 className="display-6">Ler QR Code</h1>
+                <p className="lead">Centralize o código na moldura.</p>
+              </div>
+            </div>
+          </>
+        );
+    }
+  };
 
   return (
     <>
-      <div className="header-container">
-        <Header />
-      </div>
-
+      <Header />
       <div className="scanner-container">
-        <Scanner
-          onScan={(result) => sendQrCodeData(result[0].rawValue)}
-          components={{ finder: false }}
-        />
-
-        <div className="overlay">
-          <div className="mask">
-            <div className="frame"></div>
-          </div>
-          <div className="instructions text-white text-center">
-            <h1 className="display-6">Ler QR Code</h1>
-            <p className="lead">Centralize o código na moldura.</p>
-          </div>
-        </div>
+        {renderContent()}
       </div>
     </>
   );
