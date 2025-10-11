@@ -24,7 +24,9 @@ api_router.include_router(teacher_router)
 app = FastAPI(title="PresençaQR - UFAL")
 origins = [
     "http://localhost:5173",
-    "http://127.0.0.1:5173"
+    "http://127.0.0.1:5173",
+    "https://viniciussantiago.me",
+    "https://presencaqr.vercel.app"
 ]
 
 app.add_middleware(
