@@ -15,6 +15,7 @@ import AllReportsPage from "./AllReports";
 import CheckDataPage from "./CheckReportData";
 import ClassesPage from "./ClassesPage/index.jsx";
 import EnrollmentPage from "./EnrollmentPage/index.jsx";
+import CourseManagementPage from "./CourseManagement/index.jsx";
 
 export  {
     Home,
@@ -33,6 +34,7 @@ export  {
     AllReportsPage,
     CheckDataPage,
     ClassesPage,
-    EnrollmentPage
+    EnrollmentPage,
+    CourseManagementPage
 }
 

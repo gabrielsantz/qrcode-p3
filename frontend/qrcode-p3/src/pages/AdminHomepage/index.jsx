@@ -41,6 +41,15 @@ function AdminHomepage() {
             onClick={() => navigate("/admin/user-management")}
           />
 
+          <CardOption 
+            icon={<BsPersonAdd />}
+            title="Gerenciar matérias"
+            text="Adicione, edite ou remova matérias e seus respectivos professores"
+            buttonLabel="Gerenciar"
+            buttonVariant="success"
+            onClick={() => navigate("/admin/course-management")}
+          />
+
         </div>
       </div>
     </>
