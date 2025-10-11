@@ -26,6 +26,7 @@ const NavLinks = ({ role }) => {
         <>
           <Nav.Link as={NavLink} to="/admin">Página Inicial</Nav.Link>
           <Nav.Link as={NavLink} to="/admin/user-management">Gerenciar Usuários</Nav.Link>
+          <Nav.Link as={NavLink} to="/admin/course-management">Gerenciar Matérias</Nav.Link>
           <Nav.Link as={NavLink} to="/admin/all-reports">Todos os Relatórios</Nav.Link>
         </>
       );
