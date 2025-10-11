@@ -4,6 +4,7 @@ from app.api.teacher import services as teacher_service
 from app.core.security import get_current_user
 from app.api.class_session.schemas import ClassSessionRead
 from app.api.teacher.schemas import TeacherPublic
+from app.core.models import User
 
 
 router = fastapi.APIRouter()
