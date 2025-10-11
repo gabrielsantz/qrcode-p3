@@ -32,8 +32,8 @@
         <tbody>
             {% for att in attendances %}
             <tr>
-                <td>{{ att.student_name }}</td>
-                <td>{{ att.student_registration }}</td>
+                <td>{{ att.student.user.name }}</td>
+                <td>{{ att.student.user.registration }}</td>
                 <td>{{ att.arrival_time.strftime('%H:%M:%S') if att.arrival_time else 'N/A' }}</td>
                 <td class="{{ 'success' if att.attended else 'danger' }}">
                     {{ 'Presente' if att.attended else 'Ausente' }}
