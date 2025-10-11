@@ -30,13 +30,13 @@
             </tr>
         </thead>
         <tbody>
-            {% for att in attendances %}
+            {% for att in session.attendances %}
             <tr>
                 <td>{{ att.student.user.name }}</td>
                 <td>{{ att.student.user.registration }}</td>
-                <td>{{ att.arrival_time.strftime('%H:%M:%S') if att.arrival_time else 'N/A' }}</td>
-                <td class="{{ 'success' if att.attended else 'danger' }}">
-                    {{ 'Presente' if att.attended else 'Ausente' }}
+                <td>{{ att.marked_at.strftime('%H:%M:%S') if att.marked_at else 'N/A' }}</td>
+                <td class="{{ 'success' if att.present else 'danger' }}">
+                    {{ 'Presente' if att.present else 'Ausente' }}
                 </td>
             </tr>
             {% endfor %}
