@@ -18,4 +18,4 @@ class Teacher:
 
     user: Mapped[User] = relationship(back_populates="teacher")
 
-    courses: Mapped[list["Course"]] = relationship(back_populates="teacher")
+    courses: Mapped[list["Course"]] = relationship(back_populates="teacher", cascade="all, delete-orphan")

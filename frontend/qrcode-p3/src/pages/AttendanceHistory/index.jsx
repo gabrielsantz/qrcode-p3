@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import apiClient from '../../api';
 import Header from '../../components/Header';
 import { useAuth } from '../../AuthContext';
+import { Button, Spinner } from 'react-bootstrap';
 
 const AttendanceHistory = () => {
   const { user } = useAuth();
@@ -59,15 +60,12 @@ const AttendanceHistory = () => {
 
   if (loading) {
     return (
-      <div className="d-flex flex-column justify-content-center align-items-center" style={{ height: '100vh' }}>
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Carregando...</span>
-        </div>
-        <h4 className="mt-3">Carregando histórico...</h4>
+      <div className="d-flex flex-column vh-100 justify-content-center align-items-center">
+        <Spinner animation="border" role="status" />
+        <p className="mt-3">Carregando histórico...</p>
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="container mt-5">
@@ -92,8 +90,13 @@ const AttendanceHistory = () => {
       <Header /> 
       
       <div className="container mt-4">
-        <h1 className="mb-4">Histórico de Presenças</h1>
-
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h1 className="">Histórico de Presenças</h1>
+          <Button variant="outline-secondary" onClick={() => history.back()}>
+            &larr; Voltar
+          </Button>
+        </div>
+          
         <div className="row g-3 mb-4">
           <div className="col-md-5">
             <label htmlFor="materia-select" className="form-label">Filtrar por Matéria:</label>

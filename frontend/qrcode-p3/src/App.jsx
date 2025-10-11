@@ -2,7 +2,7 @@ import './index.css';
 import { Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
-import { Home, ClassesPage, TeacherHomepage, QrReaderPage, StudentHomepage, LoginPage, RegisterPage, QrGenerator, AttendanceHistory, ReportGeneration, Reports, PastReport, AdminHomepage, UserManagementPage, AllReportsPage, CheckDataPage, EnrollmentPage } from './pages';
+import { Home, ClassesPage, TeacherHomepage, QrReaderPage, StudentHomepage, LoginPage, RegisterPage, QrGenerator, AttendanceHistory, ReportGeneration, Reports, PastReport, AdminHomepage, UserManagementPage, AllReportsPage, CheckDataPage, EnrollmentPage, CourseManagementPage } from './pages';
 
 
 export default function App() {
@@ -26,7 +26,7 @@ export default function App() {
         <Route path="/professor/qr-code/:classSessionId" element={<QrGenerator />} />
         <Route path="/professor/qr-code/report-generation/:classSessionId" element={<ReportGeneration />} />
         <Route path="/professor/reports" element={<Reports />} />
-        <Route path="/professor/reports/past-report/:reportId" element={<PastReport />} />
+        <Route path="/professor/reports/past-report/:classSessionId" element={<PastReport />} />
         <Route path="/professor/classes" element={<ClassesPage />} />
       </Route>
 
@@ -35,6 +35,7 @@ export default function App() {
         <Route path="/admin/user-management" element={<UserManagementPage />} />
         <Route path="/admin/all-reports" element={<AllReportsPage />} />
         <Route path="/admin/all-reports/check-data/:classSessionId" element={<CheckDataPage />} />
+        <Route path="/admin/course-management" element={<CourseManagementPage />} />
       </Route>
 
     </Routes>

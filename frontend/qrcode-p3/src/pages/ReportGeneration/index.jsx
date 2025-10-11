@@ -52,7 +52,12 @@ const ReportGenerationPage = () => {
         <>
             <Header />
             <Container className="mt-4">
-                <h1 className="mb-3">Relatório de Presença</h1>
+                <div className="d-flex justify-content-between align-items-center">
+                    <h1 className="mb-3">Relatório de Presença</h1>
+                    <Button variant="outline-secondary" onClick={() => history.back()}>
+                        &larr; Voltar
+                    </Button>
+                </div>
                 
                 <Card className="mb-4">
                     <Card.Header as="h5">
