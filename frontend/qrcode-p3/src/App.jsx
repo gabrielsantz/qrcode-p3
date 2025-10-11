@@ -26,7 +26,7 @@ export default function App() {
         <Route path="/professor/qr-code/:classSessionId" element={<QrGenerator />} />
         <Route path="/professor/qr-code/report-generation/:classSessionId" element={<ReportGeneration />} />
         <Route path="/professor/reports" element={<Reports />} />
-        <Route path="/professor/reports/past-report/:reportId" element={<PastReport />} />
+        <Route path="/professor/reports/past-report/:classSessionId" element={<PastReport />} />
         <Route path="/professor/classes" element={<ClassesPage />} />
       </Route>
 

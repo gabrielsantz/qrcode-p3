@@ -18,5 +18,7 @@ class Student:
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), unique=True)
 
     user: Mapped[User] = relationship(back_populates="student")
-    enrollments: Mapped[list["Enrollment"]] = relationship(back_populates="student")
-    attendances: Mapped[list["Attendance"]] = relationship()
+    enrollments: Mapped[list["Enrollment"]] = relationship(back_populates="student", cascade="all, delete-orphan")
+    attendances: Mapped[list["Attendance"]] = relationship(
+        cascade="all, delete-orphan", back_populates="student"
+    )

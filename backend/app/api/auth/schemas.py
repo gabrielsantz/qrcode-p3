@@ -11,6 +11,10 @@ class UserCreate(BaseModel):
     role: UserRole
     registration: Optional[str] = None
 
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    role: Optional[UserRole] = None
 
 class UserLogin(BaseModel):
     email: EmailStr

@@ -17,7 +17,7 @@ function StudentHomepage() {
     <>
       <Header />
       <div className="text-center mt-5 px-4">
-        <h1>Bem-vindo, {user?.name ?? "Aluno"} 👋</h1>
+        <h1>Bem-vindo, aluno 👋</h1>
         <p>O que deseja fazer?</p>
       </div>
 

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import './checkReportData.css';
 import apiClient from '../../api';
-import { Spinner, Alert, Container, Table, Button } from 'react-bootstrap';
+import { Spinner, Alert, Container, Table, Button, Card } from 'react-bootstrap';
+import { FaArrowLeft } from 'react-icons/fa';
 
 const StatCard = ({ title, value, subtitle }) => (
   <div className="stat-card">
@@ -15,6 +16,7 @@ const StatCard = ({ title, value, subtitle }) => (
 
 const CheckDataPage = () => {
   const { classSessionId } = useParams();
+  const navigate = useNavigate();
   const [sessionData, setSessionData] = useState(null);
   const [attendances, setAttendances] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,21 +50,15 @@ const CheckDataPage = () => {
 
   const statistics = useMemo(() => {
     if (!attendances || attendances.length === 0) {
-      return {
-        presentStudents: '0',
-        presencePercentage: '0%',
-        averageArrivalTime: 'N/A',
-      };
+      return { presentStudents: '0', presencePercentage: '0%', averageArrivalTime: 'N/A' };
     }
 
     const presentStudentsList = attendances.filter(a => a.attended);
     const presentCount = presentStudentsList.length;
     const totalStudents = attendances.length;
-
     const presencePercentage = totalStudents > 0 ? ((presentCount / totalStudents) * 100).toFixed(0) + '%' : '0%';
 
     let averageArrivalTime = 'N/A';
-    
     const studentsForAverage = presentStudentsList.filter(student => student.arrival_time);
     const countForAverage = studentsForAverage.length;
 
@@ -79,11 +75,7 @@ const CheckDataPage = () => {
       averageArrivalTime = `${hours}:${minutes}`;
     }
     
-    return {
-      presentStudents: presentCount.toString(),
-      presencePercentage,
-      averageArrivalTime,
-    };
+    return { presentStudents: presentCount.toString(), presencePercentage, averageArrivalTime };
   }, [attendances]);
 
   const handleSavePDF = () => {
@@ -93,7 +85,7 @@ const CheckDataPage = () => {
   if (loading) {
     return (
       <div className="d-flex flex-column vh-100 justify-content-center align-items-center">
-        <Spinner animation="border" role="status" />
+        <Spinner animation="border" />
         <p className="mt-3">Carregando relatório...</p>
       </div>
     );
@@ -111,24 +103,28 @@ const CheckDataPage = () => {
     <>
       <Header />
       <Container className="mt-4 report-stats-container">
-        <div className="report-header">
-          <span className="report-materia">{sessionData.course?.name}</span>
-          <span className="report-professor">Prof. {sessionData.course?.teacher?.name}</span>
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h1>Detalhes do Relatório</h1>
+          <Button variant="outline-secondary" onClick={() => navigate(-1)}>
+            <FaArrowLeft className="me-2" />
+            Voltar
+          </Button>
         </div>
+        
+        <Card className="mb-4">
+            <Card.Header>Informações da Aula</Card.Header>
+            <Card.Body>
+                <Card.Title>{sessionData.course?.name}</Card.Title>
+                <Card.Subtitle className="mb-2 text-muted">
+                    Prof. {sessionData.course?.teacher?.name}
+                </Card.Subtitle>
+            </Card.Body>
+        </Card>
 
         <div className="stats-grid">
-          <StatCard 
-            title="Alunos presentes" 
-            value={statistics.presentStudents}
-          />
-          <StatCard 
-            title="Porcentagem de presença" 
-            value={statistics.presencePercentage}
-          />
-          <StatCard 
-            title="Horário médio de chegada" 
-            value={statistics.averageArrivalTime}
-          />
+          <StatCard title="Alunos presentes" value={statistics.presentStudents} />
+          <StatCard title="Porcentagem de presença" value={statistics.presencePercentage} />
+          <StatCard title="Horário médio de chegada" value={statistics.averageArrivalTime} />
         </div>
 
         <h3 className="mt-5 mb-3">Lista de Chamada</h3>
@@ -153,7 +149,7 @@ const CheckDataPage = () => {
           </tbody>
         </Table>
 
-        <div className="pdf-button-container">
+        <div className="pdf-button-container text-end">
           <Button variant="primary" onClick={handleSavePDF}>
             Salvar como PDF
           </Button>

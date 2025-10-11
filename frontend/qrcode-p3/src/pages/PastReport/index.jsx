@@ -1,114 +1,125 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import apiClient from '../../api';
 import Header from '../../components/Header';
-
-// dados mockados
-const mockDatabase = {
-  '1': { materia: 'Programação 3', alunos: [ { id: 1, nome: 'Ana Carolina', matricula: '22442313', chegada: '15:20' }, 
-    { id: 2, nome: 'Bruno Costa', matricula: '432312343', chegada: '15:20' },
-    { id: 3, nome: 'Carlos de Andrade', matricula: '12345678', chegada: '15:21' },
-    { id: 4, nome: 'Daniela Ferreira', matricula: '56382892', chegada: '15:21' },
-    { id: 5, nome: 'Eduardo Martins', matricula: '62801846', chegada: '15:22' },
-    { id: 6, nome: 'Fernanda Gonçalves', matricula: '62820512', chegada: '15:22' },
-    { id: 7, nome: 'Gabriel Lima', matricula: '97251846', chegada: '15:25' },
-    { id: 8, nome: 'Helena Oliveira', matricula: '62583512', chegada: '15:26' },
-    { id: 9, nome: 'Igor Pereira', matricula: '21456254', chegada: '15:26' }, ] },
-  '2': { materia: 'Programação 1', alunos: [ { id: 1, nome: 'Ana Carolina', matricula: '22442313', chegada: '15:20' }, 
-    { id: 2, nome: 'Bruno Costa', matricula: '432312343', chegada: '15:20' },
-    { id: 3, nome: 'Carlos de Andrade', matricula: '12345678', chegada: '15:21' },
-    { id: 4, nome: 'Daniela Ferreira', matricula: '56382892', chegada: '15:21' },
-    { id: 5, nome: 'Eduardo Martins', matricula: '62801846', chegada: '15:22' },
-    { id: 6, nome: 'Fernanda Gonçalves', matricula: '62820512', chegada: '15:22' },
-    { id: 7, nome: 'Gabriel Lima', matricula: '97251846', chegada: '15:25' },
-    { id: 8, nome: 'Helena Oliveira', matricula: '62583512', chegada: '15:26' },
-    { id: 9, nome: 'Igor Pereira', matricula: '21456254', chegada: '15:26' }, ] },
-  '3': { materia: 'Teoria da Computação', alunos: [ { id: 1, nome: 'Ana Carolina', matricula: '22442313', chegada: '15:20' }, 
-    { id: 2, nome: 'Bruno Costa', matricula: '432312343', chegada: '15:20' },
-    { id: 3, nome: 'Carlos de Andrade', matricula: '12345678', chegada: '15:21' },
-    { id: 4, nome: 'Daniela Ferreira', matricula: '56382892', chegada: '15:21' },
-    { id: 5, nome: 'Eduardo Martins', matricula: '62801846', chegada: '15:22' },
-    { id: 6, nome: 'Fernanda Gonçalves', matricula: '62820512', chegada: '15:22' },
-    { id: 7, nome: 'Gabriel Lima', matricula: '97251846', chegada: '15:25' },
-    { id: 8, nome: 'Helena Oliveira', matricula: '62583512', chegada: '15:26' },
-    { id: 9, nome: 'Igor Pereira', matricula: '21456254', chegada: '15:26' }, ] },
-};
+import { Container, Table, Button, Badge, Card, Spinner } from 'react-bootstrap';
 
 const PastReportsPage = () => {
-  const { reportId } = useParams();
-  const [materia, setMateria] = useState('');
-  const [alunos, setAlunos] = useState([]);
-  const [loading, setLoading] = useState(true);
+    const { classSessionId } = useParams(); 
 
-  useEffect(() => {
-    //simula um tempo de espera 
-    setTimeout(() => {
-      const reportData = mockDatabase[reportId];
-      
-      if (reportData) {
-        setMateria(reportData.materia);
-        setAlunos(reportData.alunos);
-      } else {
-        setError('Relatório não encontrado');
-      }
-      setLoading(false);
-    }, 500);
-  }, [reportId]);
+    const [sessionInfo, setSessionInfo] = useState(null);
+    const [attendances, setAttendances] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  const handleSaveAsPDF = () => {
+    useEffect(() => {
+        const fetchAttendanceData = async () => {
+            if (!classSessionId) {
+                setError("ID da aula não encontrado na URL.");
+                setLoading(false);
+                return;
+            }
+
+            try {
+                const [attendancesResponse, sessionResponse] = await Promise.all([
+                    apiClient.get(`/attendance/class_session/${classSessionId}`),
+                    apiClient.get(`/class_session/${classSessionId}`) 
+                ]);
+                
+
+                setAttendances(attendancesResponse.data || []);
+
+                setSessionInfo(sessionResponse.data.course); 
+
+            } catch (err) {
+                console.error("Erro ao buscar dados da chamada:", err);
+                setError("Não foi possível carregar os dados. Tente novamente.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAttendanceData();
+    }, [classSessionId]);
+
+    const handleSaveAsPDF = () => {
     console.log('Gerando PDF...');
-    alert('Função de gerar PDF a ser implementada!');
-  };
+      alert('Função de gerar PDF a ser implementada!');
+      };
 
     if (loading) {
-    return (
-      <div className="d-flex flex-column vh-100 justify-content-center align-items-center">
-        <Spinner animation="border" role="status" />
-        <p className="mt-3">Carregando lista de presença...</p>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <div className="header-container">
-        <Header />
-      </div>
-
-      <div className="attendance-list-container">
-        <div className="materia-header">
-          <label htmlFor="materia-display">Matéria:</label>
-          <div id="materia-display" className="materia-display-box">
-            {materia}
+        return (
+          <div className="d-flex flex-column vh-100 justify-content-center align-items-center">
+            <Spinner animation="border" role="status" />
+            <p className="mt-3">Carregando relatório...</p>
           </div>
-        </div>
+        );
+    }
 
-        <table className="table table-bordered presence-list-table table table-striped">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Matrícula</th>
-              <th>Chegada</th>
-            </tr>
-          </thead>
-          <tbody>
-            {alunos.map((aluno) => (
-              <tr key={aluno.id}>
-                <td>{aluno.nome}</td>
-                <td>{aluno.matricula}</td>
-                <td>{aluno.chegada}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    return (
+        <>
+            <Header />  
+            <Container className="mt-4">
+              <div className="d-flex justify-content-between align-items-center">
+                <h1 className="mb-3">Relatório de Presença</h1>
+                <Button variant="outline-secondary" onClick={() => history.back()}>
+                  &larr; Voltar
+                </Button>
+              </div>
 
-        <div className="action-buttons">
-          <button onClick={handleSaveAsPDF} className="btn-custom btn-save-pdf">
-            Salvar como PDF
-          </button>
-        </div>
-      </div>
-    </>
-  );
+                              
+                <Card className="mb-4">
+                    <Card.Header as="h5">
+                        Detalhes da Aula
+                    </Card.Header>
+                    <Card.Body>
+                        <Card.Title as="h4">{sessionInfo?.name || 'Matéria não identificada'}</Card.Title>
+                        <Card.Text>
+                            Lista de alunos presentes na aula.
+                        </Card.Text>
+                    </Card.Body>
+                </Card>
+
+                <Table striped bordered hover responsive>
+                    <thead>
+                        <tr>
+                            <th className="text-center">Nome do Aluno</th>
+                            <th className="text-center">Matrícula</th>
+                            <th className="text-center">Horário de Chegada</th>
+                            <th className="text-center">Presença</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {attendances.length > 0 ? (
+                            attendances.map((att, index) => (
+                                <tr key={index}>
+                                    <td className="text-center">{att.student_name}</td>
+                                    <td className="text-center">{att.student_registration}</td>
+                                    <td className="text-center">{att.arrival_time || '--'}</td>
+                                    <td className="text-center">
+                                      <Badge bg={att.attended ? 'success' : 'danger'} pill>
+                                        {att.attended ? 'Presente' : 'Ausente'}
+                                      </Badge>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4" className="text-center">Nenhum aluno na lista de chamada para esta aula.</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </Table>
+                <div className="text-end mt-3">
+
+                  <Button variant="primary" onClick={handleSaveAsPDF}>
+                      Salvar como PDF
+                  </Button>
+                </div>
+            </Container>
+        </>
+      
+    );
 };
 
 export default PastReportsPage;

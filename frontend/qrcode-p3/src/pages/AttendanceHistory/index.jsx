@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import apiClient from '../../api';
 import Header from '../../components/Header';
 import { useAuth } from '../../AuthContext';
+import { Button, Spinner } from 'react-bootstrap';
 
 const AttendanceHistory = () => {
   const { user } = useAuth();
@@ -89,8 +90,13 @@ const AttendanceHistory = () => {
       <Header /> 
       
       <div className="container mt-4">
-        <h1 className="mb-4">Histórico de Presenças</h1>
-
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h1 className="">Histórico de Presenças</h1>
+          <Button variant="outline-secondary" onClick={() => history.back()}>
+            &larr; Voltar
+          </Button>
+        </div>
+          
         <div className="row g-3 mb-4">
           <div className="col-md-5">
             <label htmlFor="materia-select" className="form-label">Filtrar por Matéria:</label>

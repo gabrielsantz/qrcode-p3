@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
 import Header from '../../components/Header';
+import {Badge}  from 'react-bootstrap';
 import { useAuth } from '../../AuthContext';
 
 
@@ -81,14 +82,25 @@ const ClassesPage = () => {
         <>
             <Header />
             <div className="container mt-4">
+                <div className="d-flex justify-content-between align-items-center">
+
                 <h1 className="mb-3">Selecionar Aula</h1>
+                <Button variant="outline-secondary" onClick={() => history.back()}>
+                  &larr; Voltar
+                </Button>
+                
+                </div>
                 <p className="lead mb-4">Escolha uma aula abaixo para iniciar a chamada e gerar o QR Code.</p>
 
                 {Object.keys(groupedSessions).length > 0 ? (
                     <Accordion defaultActiveKey="0">
                         {Object.entries(groupedSessions).map(([courseName, sessions], index) => (
                             <Accordion.Item eventKey={String(index)} key={courseName}>
-                                <Accordion.Header>{courseName}</Accordion.Header>
+                                <Accordion.Header><span className="fw-bold me-2">{courseName}</span> 
+                                    <Badge bg="secondary" pill>
+                                        {classSessions.length} {classSessions.length > 1 ? 'aulas' : 'aula'}
+                                    </Badge>
+                                </Accordion.Header>
                                 <Accordion.Body>
                                     <ListGroup>
                                         {sessions.map((session) => (
@@ -96,9 +108,12 @@ const ClassesPage = () => {
                                                 key={session.id}
                                                 className="d-flex justify-content-between align-items-center"
                                             >
-                                                <span>
-                                                    Aula do dia: <strong>{formatarData(session.date)}</strong>
-                                                </span>
+                                                <div>
+                                                    <div> Aula do dia: <strong>{formatarData(session.date)}</strong> </div>
+                                                    <small className="text-muted">
+                                                        {session.start_time?.slice(0, 5)} - {session.end_time?.slice(0, 5)}
+                                                    </small>
+                                                </div>
                                                 <Button
                                                     variant="outline-primary"
                                                     onClick={() => handleSelectSession(session.id)}
@@ -115,6 +130,7 @@ const ClassesPage = () => {
                 ) : (
                     <Alert variant="info">Você não possui aulas futuras cadastradas.</Alert>
                 )}
+
             </div>
         </>
     );
