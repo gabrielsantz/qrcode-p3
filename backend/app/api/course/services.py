@@ -122,8 +122,7 @@ def update_course(course_id: uuid.UUID, course_update: CourseUpdate) -> Course:
             
         db.commit()
         db.refresh(course)
-        course.teacher.name = course.teacher.user.name
-        return course
+        return CourseRead.model_validate(course)
 
 def delete_course(course_id: uuid.UUID) -> None:
     with get_db() as db:

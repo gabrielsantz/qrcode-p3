@@ -17,6 +17,10 @@ def get_all_teachers(current_user: 'User'):
 
 def get_classes_by_teacher(current_user: 'User'):
     teacher_id = current_user.teacher_id
+
+    if current_user.role == UserRole.STUDENT:
+        raise fastapi.HTTPException(status_code=403, detail="Acesso negado")
+
     with get_db() as db:
         classes = (
             db.query(ClassSession)
