@@ -7,6 +7,12 @@ from app.core.utils.validate_registration import validate_user_registration
 from app.core import security
 
 def register_user(user_in: UserCreate) -> UserPublic:
+    if not user_in.email.endswith("@ic.ufal.br"):
+        raise fastapi.HTTPException(
+            status_code=fastapi.status.HTTP_400_BAD_REQUEST,
+            detail="O email deve ser o institucional (@ic.ufal.br).",
+        )
+
     with get_db() as db:
         existing_user = db.query(User).filter(User.email == user_in.email).first()
         if existing_user:
