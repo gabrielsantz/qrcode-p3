@@ -6,7 +6,6 @@ import Header from '../../components/Header';
 import { Spinner } from 'react-bootstrap';
 
 function LoginPage({ onLoginSuccess }) {
-
   const { user, loading, setUser } = useAuth();
   const navigate = useNavigate();
 
@@ -15,12 +14,11 @@ function LoginPage({ onLoginSuccess }) {
       return;
     }
     if (user) {
-      let destination = '/';
-      switch (user.role) {
-        case 'student': destination = '/student'; break;
-        case 'teacher': destination = '/professor'; break;
-        case 'admin': destination = '/admin'; break;
-      }
+      const destination = {
+        student: '/student',
+        teacher: '/professor',
+        admin: '/admin'
+      }[user.role] || '/';
       if (destination !== '/') {
         navigate(destination, { replace: true });
       }
@@ -44,9 +42,10 @@ function LoginPage({ onLoginSuccess }) {
       if (onLoginSuccess) onLoginSuccess(me);
     } catch (err) {
       if (err.response?.status === 403) {
-        navigate('/pending-activation'); 
+        navigate('/pending-activation', { state: { email: email } });
+      } else {
+        setError(err.response?.data?.detail || 'E-mail ou senha incorretos.');
       }
-      setError(err.response?.data?.detail || 'Erro ao fazer login. Tente novamente.');
     } finally {
       setIsLoading(false);
     }

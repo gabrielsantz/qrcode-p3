@@ -70,21 +70,6 @@ def get_enrollments_by_student(student_id: uuid.UUID) -> List[Enrollment]:
             
         return enrollments
     
-def get_enrollments_by_course(course_id: uuid.UUID) -> List[Enrollment]:
-    with get_db() as db:
-        course = db.query(Course).filter(Course.id == course_id).first()
-        if not course:
-            raise HTTPException(status_code=404, detail="Curso não encontrado")
-
-        enrollments = db.query(Enrollment).filter(Enrollment.course_id == course_id).options(
-            joinedload(Enrollment.student).joinedload(Student.user),
-            joinedload(Enrollment.course_)
-        ).all()
-        
-        for en in enrollments:
-            en.student.name = en.student.user.name
-
-        return enrollments
 
 def delete_enrollment(enrollment_id: uuid.UUID) -> None:
     with get_db() as db:
