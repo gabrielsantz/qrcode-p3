@@ -6,9 +6,8 @@ from .table_registry import table_registry
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .course import Course
-    from .student import Student
-    from .class_session import ClassSession
+    from app.core.models import Student, Course, ClassSession, Enrollment
+
 
 @table_registry.mapped_as_dataclass(init=False)
 class Attendance:
@@ -25,3 +24,4 @@ class Attendance:
     student: Mapped["Student"] = relationship(back_populates="attendances")
     course_: Mapped["Course"] = relationship()
     class_session: Mapped["ClassSession"] = relationship(back_populates="attendances")
+    enrollments: Mapped[list["Enrollment"]] = relationship(back_populates="attendances")
