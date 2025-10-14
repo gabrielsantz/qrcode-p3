@@ -23,18 +23,7 @@ def login_for_access_token_route(
     user = auth_service.authenticate_user(
         email=login_data.email, password=login_data.password
     )
-    if not user:
-        raise fastapi.HTTPException(
-            status_code=fastapi.status.HTTP_401_UNAUTHORIZED,
-            detail="E-mail ou senha incorretos",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    if not user.is_active:
-        raise fastapi.HTTPException(
-            status_code=fastapi.status.HTTP_403_FORBIDDEN,
-            detail="Conta não ativada",
-        )
+    
 
     token_data = {
         "sub": str(user.id),
