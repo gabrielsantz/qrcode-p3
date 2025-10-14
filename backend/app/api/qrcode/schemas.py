@@ -4,6 +4,8 @@ from pydantic import BaseModel
 
 class QRTokenRequest(BaseModel):
     class_session_id: uuid.UUID
+    latitude: float
+    longitude: float
 
 
 class QRTokenResponse(BaseModel):
@@ -14,6 +16,8 @@ class QRTokenResponse(BaseModel):
 
 class QRScanRequest(BaseModel):
     token: str
+    latitude: float
+    longitude: float
 
 
 class QRScanResponse(BaseModel):

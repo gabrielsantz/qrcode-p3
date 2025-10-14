@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Scanner } from '@yudiel/react-qr-scanner';
 import Header from '../../components/Header';
 import './style.css';
@@ -9,22 +9,43 @@ import ScanSuccess from '../../components/ScanFeedback/ScanSuccess';
 import ScanError from '../../components/ScanFeedback/ScanError';
 
 function QrReaderPage() {
-  const [scanState, setScanState] = useState('scanning'); 
+  const [scanState, setScanState] = useState('scanning');
   const [feedbackMessage, setFeedbackMessage] = useState('');
 
-  const sendQrCodeData = async (scannedToken) => {
-    if (!scannedToken || scanState === 'loading') return;
+  const handleScanResult = useCallback(async (scannedToken) => {
+    if (!scannedToken || scanState !== 'scanning') return;
 
-    setScanState('loading');
-    try {
-      const response = await apiClient.post('/qrcode/scan', { token: scannedToken });
-      setFeedbackMessage(response.data.detail || 'Presença confirmada!');
-      setScanState('success');
-    } catch (error) {
-      setFeedbackMessage(error.response?.data?.detail || 'QR Code inválido ou expirado.');
+    setScanState('getting_location');
+
+    if (!navigator.geolocation) {
+      setFeedbackMessage("Geolocalização não é suportada neste navegador.");
       setScanState('error');
+      return;
     }
-  };
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setScanState('loading');
+        try {
+          const response = await apiClient.post('/qrcode/scan', {
+            token: scannedToken,
+            latitude,
+            longitude,
+          });
+          setFeedbackMessage(response.data.detail || 'Presença confirmada!');
+          setScanState('success');
+        } catch (error) {
+          setFeedbackMessage(error.response?.data?.detail || 'QR Code inválido ou expirado.');
+          setScanState('error');
+        }
+      },
+      (geoError) => {
+        setFeedbackMessage('Não foi possível obter sua localização. Ative o GPS e permita o acesso.');
+        setScanState('error');
+      }
+    );
+  }, [scanState]);
 
   const handleRetry = () => {
     setScanState('scanning');
@@ -33,11 +54,14 @@ function QrReaderPage() {
 
   const renderContent = () => {
     switch (scanState) {
+      case 'getting_location':
       case 'loading':
         return (
           <div className="text-center text-white">
             <Spinner animation="border" role="status" variant="light" />
-            <p className="lead mt-3">Processando sua presença...</p>
+            <p className="lead mt-3">
+              {scanState === 'getting_location' ? 'Obtendo sua localização...' : 'Validando presença...'}
+            </p>
           </div>
         );
       case 'success':
@@ -49,7 +73,7 @@ function QrReaderPage() {
         return (
           <>
             <Scanner
-              onScan={(result) => sendQrCodeData(result[0].rawValue)}
+              onScan={(result) => handleScanResult(result[0].rawValue)}
               components={{ finder: false }}
             />
             <div className="overlay">

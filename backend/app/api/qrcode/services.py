@@ -8,6 +8,7 @@ from app.core.models import User, ClassSession, Course, Teacher, UserRole, Stude
 from app.api.qrcode.schemas import QRTokenRequest, QRTokenResponse, QRScanRequest, QRScanResponse
 from app.infra.db.connection import get_db
 from app.infra.config import settings
+from app.core.utils.distance import check_distance
 
 def generate_qr_token(request: QRTokenRequest, current_user: User) -> QRTokenResponse:
     with get_db() as db:
@@ -33,6 +34,8 @@ def generate_qr_token(request: QRTokenRequest, current_user: User) -> QRTokenRes
             "class_session_id": str(request.class_session_id),
             "course_id": str(class_session.course_id),
             "teacher_id": str(current_user.id),
+            "latitude": request.latitude,
+            "longitude": request.longitude,
             "exp": int(expires_at.timestamp()),
             "type": "qr_attendance"
         }
@@ -52,12 +55,13 @@ def generate_qr_token(request: QRTokenRequest, current_user: User) -> QRTokenRes
 
 
 def scan_qr_code(scan_data: QRScanRequest, current_user: User) -> QRScanResponse:
+    if current_user.role != UserRole.STUDENT:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Apenas estudantes podem marcar presença"
+        )
+    
     with get_db() as db:
-        if current_user.role != UserRole.STUDENT:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Apenas estudantes podem marcar presença"
-            )
         
         try:
             payload = jwt.decode(
@@ -71,7 +75,10 @@ def scan_qr_code(scan_data: QRScanRequest, current_user: User) -> QRScanResponse
                 raise HTTPException(status_code=400, detail="Token inválido")
             
             class_session_id = uuid.UUID(payload.get("class_session_id"))
-            
+
+            token_latitude = payload.get("latitude")
+            token_longitude = payload.get("longitude")
+
         except jwt.ExpiredSignatureError:
             raise HTTPException(
                 status_code=status.HTTP_410_GONE,
@@ -79,6 +86,12 @@ def scan_qr_code(scan_data: QRScanRequest, current_user: User) -> QRScanResponse
             )
         except jwt.InvalidTokenError:
             raise HTTPException(status_code=400, detail="Token inválido")
+
+        try:
+            check_distance(scan_data.latitude, scan_data.longitude, token_latitude, token_longitude)
+        except ValueError as ve:
+            raise HTTPException(status_code=400, detail=str(ve))
+
 
         student = db.query(Student).options(
             joinedload(Student.user)
