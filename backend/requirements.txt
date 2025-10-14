@@ -8,3 +8,4 @@ bcrypt
 alembic
 jinja2
 weasyprint
+geopy

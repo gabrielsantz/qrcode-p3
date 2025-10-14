@@ -55,7 +55,17 @@ def authenticate_user(email: str, password: str) -> UserPublic | None:
         if not existing_user or not security.verify_password(
             plain_password=password, hashed_password=existing_user.hashed_password
         ):
-            return None 
+            raise fastapi.HTTPException(
+                status_code=fastapi.status.HTTP_401_UNAUTHORIZED,
+                detail="E-mail ou senha incorretos",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        if existing_user.role != UserRole.ADMIN and not existing_user.is_active:
+            raise fastapi.HTTPException(
+                status_code=fastapi.status.HTTP_403_FORBIDDEN,
+                detail="Conta não ativada",
+            )
 
             
         return existing_user

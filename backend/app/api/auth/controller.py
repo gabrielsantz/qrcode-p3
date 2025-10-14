@@ -5,7 +5,7 @@ from app.api.auth import services as auth_service
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from app.core.models import User, UserRole
+    from app.core.models import User
 
 from app.api.auth.schemas import UserCreate, UserPublic, Token, UserLogin
 
@@ -23,18 +23,7 @@ def login_for_access_token_route(
     user = auth_service.authenticate_user(
         email=login_data.email, password=login_data.password
     )
-    if not user:
-        raise fastapi.HTTPException(
-            status_code=fastapi.status.HTTP_401_UNAUTHORIZED,
-            detail="E-mail ou senha incorretos",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    if user.role != UserRole.ADMIN and not user.is_active:
-        raise fastapi.HTTPException(
-            status_code=fastapi.status.HTTP_403_FORBIDDEN,
-            detail="Conta não ativada",
-        )
+    
 
     token_data = {
         "sub": str(user.id),
