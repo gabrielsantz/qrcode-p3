@@ -45,6 +45,7 @@ def create_enrollment(enrollment_in: EnrollmentCreate) -> Enrollment:
                 student_id=student.id,
                 course_id=course.id,
                 class_session_id=cs.id,
+                enrollment_id=new_enrollment.id,
                 present=False
             )
             db.add(attendance)
