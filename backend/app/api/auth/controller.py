@@ -5,7 +5,7 @@ from app.api.auth import services as auth_service
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from app.core.models import User
+    from app.core.models import User, UserRole
 
 from app.api.auth.schemas import UserCreate, UserPublic, Token, UserLogin
 
@@ -30,7 +30,7 @@ def login_for_access_token_route(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    if not user.is_active:
+    if user.role != UserRole.ADMIN and not user.is_active:
         raise fastapi.HTTPException(
             status_code=fastapi.status.HTTP_403_FORBIDDEN,
             detail="Conta não ativada",
