@@ -20,4 +20,4 @@ class Enrollment:
 
     student: Mapped["Student"] = relationship(back_populates="enrollments")
     course_: Mapped["Course"] = relationship(back_populates="enrollments")
-    attendances: Mapped[list["Attendance"]] = relationship(back_populates="enrollments", cascade="all, delete-orphan")
+    attendances: Mapped[list["Attendance"]] = relationship(back_populates="enrollment", cascade="all, delete-orphan")
