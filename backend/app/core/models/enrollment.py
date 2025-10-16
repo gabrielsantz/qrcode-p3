@@ -6,8 +6,7 @@ from .table_registry import table_registry
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .student import Student
-    from .course import Course
+    from app.core.models import Student, Course, Attendance
 
 
 @table_registry.mapped_as_dataclass(init=False)
@@ -21,3 +20,4 @@ class Enrollment:
 
     student: Mapped["Student"] = relationship(back_populates="enrollments")
     course_: Mapped["Course"] = relationship(back_populates="enrollments")
+    attendances: Mapped[list["Attendance"]] = relationship(back_populates="enrollment", cascade="all, delete-orphan")
