@@ -44,7 +44,7 @@ function QrGenerator() {
         if (status !== 'ready') return;
 
         if (timeLeft === 0) {
-            getLocationAndFetchToken();
+            fetchQrToken();
             return;
         }
 
