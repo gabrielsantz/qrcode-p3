@@ -22,9 +22,7 @@ function QrGenerator() {
         setError(null);
         try {
             const response = await apiClient.post('/qrcode/generate-token', {
-                class_session_id: classSessionId,
-                latitude,
-                longitude,
+                class_session_id: classSessionId
             });
 
             if (response.data && response.data.token) {
@@ -41,28 +39,6 @@ function QrGenerator() {
         }
     }, [classSessionId]);
 
-    const getLocationAndFetchToken = useCallback(() => {
-        setStatus('getting_location');
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    fetchQrToken(latitude, longitude);
-                },
-                (geoError) => {
-                    setError("Não foi possível obter sua localização. Ative o GPS e permita o acesso.");
-                    setStatus('error');
-                }
-            );
-        } else {
-            setError("Geolocalização não é suportada neste navegador.");
-            setStatus('error');
-        }
-    }, [fetchQrToken]);
-
-    useEffect(() => {
-        getLocationAndFetchToken();
-    }, [getLocationAndFetchToken]);
 
     useEffect(() => {
         if (status !== 'ready') return;
@@ -87,8 +63,6 @@ function QrGenerator() {
 
     const renderQrCode = () => {
         switch (status) {
-            case 'getting_location':
-                return <div className="d-flex flex-column justify-content-center align-items-center p-5" style={{ width: qrCodeSize, height: qrCodeSize }}><Spinner animation="border" /><p className="mt-3">Obtendo sua localização...</p></div>;
             case 'loading':
                 return <div className="d-flex flex-column justify-content-center align-items-center p-5" style={{ width: qrCodeSize, height: qrCodeSize }}><Spinner animation="border" /><p className="mt-3">Gerando QR Code...</p></div>;
             case 'error':
