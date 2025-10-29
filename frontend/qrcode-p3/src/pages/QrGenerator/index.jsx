@@ -53,7 +53,7 @@ function QrGenerator() {
         }, 1000);
 
         return () => clearInterval(timer);
-    }, [timeLeft, status, getLocationAndFetchToken]);
+    }, [timeLeft, status]);
 
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
