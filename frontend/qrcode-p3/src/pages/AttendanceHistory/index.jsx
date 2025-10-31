@@ -55,7 +55,14 @@ const AttendanceHistory = () => {
   const formatarHora = (dataHoraString) => {
     if (!dataHoraString) return '—';
     const data = new Date(dataHoraString);
-    return data.toLocaleTimeString('pt-BR');
+    // Formata como HH:mm:ss (24h), alinhado ao PDF
+    return data.toLocaleTimeString('pt-BR', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'America/Sao_Paulo',
+    });
   };
 
   if (loading) {

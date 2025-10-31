@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 import uuid
 import jwt
 from fastapi import HTTPException, status
@@ -9,6 +10,13 @@ from app.api.qrcode.schemas import QRTokenRequest, QRTokenResponse, QRScanReques
 from app.infra.db.connection import get_db
 from app.infra.config import settings
 from app.core.utils.distance import check_distance_from_ic
+
+
+def now_brasilia() -> datetime:
+    """Retorna o horário atual de Brasília (America/Sao_Paulo) sem microssegundos,
+    como datetime ingênuo (sem tzinfo) para compatibilidade com a coluna do banco."""
+    aware = datetime.now(ZoneInfo("America/Sao_Paulo")).replace(microsecond=0)
+    return aware.replace(tzinfo=None)
 
 def generate_qr_token(request: QRTokenRequest, current_user: User) -> QRTokenResponse:
     with get_db() as db:
@@ -121,6 +129,8 @@ def scan_qr_code(scan_data: QRScanRequest, current_user: User) -> QRScanResponse
         
         if existing_attendance:
             existing_attendance.present = True
+            if existing_attendance.marked_at is None:
+                existing_attendance.marked_at = now_brasilia()
             db.commit()
         
             return QRScanResponse(
@@ -129,7 +139,7 @@ def scan_qr_code(scan_data: QRScanRequest, current_user: User) -> QRScanResponse
                 course_id=class_session.course_id,
                 class_session_id=class_session.id,
                 present=True,
-                marked_at=existing_attendance.marked_at or datetime.utcnow(),
+                marked_at=existing_attendance.marked_at,
                 message="Presença já foi marcada para esta aula"
             )
 
@@ -137,9 +147,10 @@ def scan_qr_code(scan_data: QRScanRequest, current_user: User) -> QRScanResponse
             student_id=student.id,
             course_id=class_session.course_id,
             class_session_id=class_session.id,
+            enrollment_id=enrollment.id,
             present=True
         )
-
+        new_attendance.marked_at = now_brasilia()
         db.add(new_attendance)
         db.commit()
         db.refresh(new_attendance)
@@ -150,5 +161,6 @@ def scan_qr_code(scan_data: QRScanRequest, current_user: User) -> QRScanResponse
             course_id=new_attendance.course_id,
             class_session_id=new_attendance.class_session_id,
             present=True,
+            marked_at=new_attendance.marked_at,
             message="Presença registrada com sucesso"
         )
