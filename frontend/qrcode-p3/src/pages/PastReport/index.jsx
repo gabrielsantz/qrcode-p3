@@ -88,6 +88,20 @@ const PastReportsPage = () => {
         }
     };
 
+    const formatarHora = (valor) => {
+        if (!valor) return '--';
+        if (/^\d{2}:\d{2}:\d{2}$/.test(valor)) return valor;
+        const d = new Date(valor);
+        if (isNaN(d)) return String(valor);
+        return d.toLocaleTimeString('pt-BR', {
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZone: 'America/Sao_Paulo',
+        });
+    };
+
 
     if (loading) {
         return (
@@ -137,7 +151,7 @@ const PastReportsPage = () => {
                                 <tr key={index}>
                                     <td className="text-center">{att.student_name}</td>
                                     <td className="text-center">{att.student_registration}</td>
-                                    <td className="text-center">{att.arrival_time || '--'}</td>
+                                    <td className="text-center">{formatarHora(att.arrival_time)}</td>
                                     <td className="text-center">
                                       <Badge bg={att.attended ? 'success' : 'danger'} pill>
                                         {att.attended ? 'Presente' : 'Ausente'}
