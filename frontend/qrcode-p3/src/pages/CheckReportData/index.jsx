@@ -63,11 +63,26 @@ const CheckDataPage = () => {
     const countForAverage = studentsForAverage.length;
 
     if (countForAverage > 0) {
-      const totalSeconds = studentsForAverage.reduce((acc, student) => {
-        const timeParts = student.arrival_time.split(':');
-        const seconds = (+timeParts[0]) * 3600 + (+timeParts[1]) * 60 + (+timeParts[2]);
-        return acc + seconds;
-      }, 0);
+      const parseToSeconds = (val) => {
+        if (!val) return 0;
+        if (/^\d{2}:\d{2}:\d{2}$/.test(val)) {
+          const [h, m, s] = val.split(':').map(Number);
+          return h * 3600 + m * 60 + s;
+        }
+        const d = new Date(val);
+        if (isNaN(d)) return 0;
+        const hh = d.toLocaleTimeString('pt-BR', {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          timeZone: 'America/Sao_Paulo',
+        });
+        const [h, m, s] = hh.split(':').map(Number);
+        return h * 3600 + m * 60 + s;
+      };
+
+      const totalSeconds = studentsForAverage.reduce((acc, student) => acc + parseToSeconds(student.arrival_time), 0);
 
       const avgSeconds = totalSeconds / countForAverage;
       const hours = Math.floor(avgSeconds / 3600).toString().padStart(2, '0');
@@ -184,7 +199,20 @@ const CheckDataPage = () => {
               <tr key={aluno.student_registration}>
                 <td>{aluno.student_name}</td>
                 <td>{aluno.student_registration}</td>
-                <td>{aluno.arrival_time || '--:--'}</td>
+                <td>{(() => {
+                  const v = aluno.arrival_time;
+                  if (!v) return '--:--';
+                  if (/^\d{2}:\d{2}:\d{2}$/.test(v)) return v;
+                  const d = new Date(v);
+                  if (isNaN(d)) return String(v);
+                  return d.toLocaleTimeString('pt-BR', {
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    timeZone: 'America/Sao_Paulo',
+                  });
+                })()}</td>
                 <td>{aluno.attended ? 'Presente' : 'Ausente'}</td>
               </tr>
             ))}
