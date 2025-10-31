@@ -23,7 +23,8 @@ def get_attendances_for_student(student_id: int) -> StudentAttendanceResponse:
                 "date": at.class_session.date.isoformat(),
             })
             if at.marked_at:
-                formatted_attendances[-1]["marked_at"] = at.marked_at.isoformat()
+                mark = at.marked_at.replace(microsecond=0)
+                formatted_attendances[-1]["marked_at"] = mark.isoformat() + "-03:00"
             else:
                 formatted_attendances[-1]["marked_at"] = None
 
