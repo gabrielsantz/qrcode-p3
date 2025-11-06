@@ -3,6 +3,7 @@ from app.core.models import Attendance, Student
 from sqlalchemy.orm import joinedload
 from app.api.student.schemas import StudentAttendanceResponse
 import datetime
+from zoneinfo import ZoneInfo
 
 def get_attendances_for_student(student_id: int) -> StudentAttendanceResponse:
     with get_db() as db:
@@ -23,8 +24,9 @@ def get_attendances_for_student(student_id: int) -> StudentAttendanceResponse:
                 "date": at.class_session.date.isoformat(),
             })
             if at.marked_at:
-                mark = at.marked_at.replace(microsecond=0)
-                formatted_attendances[-1]["marked_at"] = mark.isoformat() + "-03:00"
+                local_tz = ZoneInfo("America/Sao_Paulo")
+                aware_mark = at.marked_at.replace(microsecond=0).replace(tzinfo=local_tz)
+                formatted_attendances[-1]["marked_at"] = aware_mark.isoformat()
             else:
                 formatted_attendances[-1]["marked_at"] = None
 
