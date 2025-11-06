@@ -91,14 +91,14 @@ const PastReportsPage = () => {
     const formatarHora = (valor) => {
         if (!valor) return '--';
         if (/^\d{2}:\d{2}:\d{2}$/.test(valor)) return valor;
-        const d = new Date(valor);
+        const hasTZ = /Z$|[+-]\d{2}:\d{2}$/.test(valor);
+        let d = hasTZ ? new Date(valor) : new Date(valor + '-03:00');
         if (isNaN(d)) return String(valor);
         return d.toLocaleTimeString('pt-BR', {
             hour12: false,
             hour: '2-digit',
             minute: '2-digit',
-            second: '2-digit',
-            timeZone: 'America/Sao_Paulo',
+            second: '2-digit'
         });
     };
 

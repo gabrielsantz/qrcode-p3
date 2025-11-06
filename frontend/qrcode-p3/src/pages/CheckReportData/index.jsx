@@ -205,12 +205,14 @@ const CheckDataPage = () => {
                   if (/^\d{2}:\d{2}:\d{2}$/.test(v)) return v;
                   const d = new Date(v);
                   if (isNaN(d)) return String(v);
-                  return d.toLocaleTimeString('pt-BR', {
+                  const hasTZ = /Z$|[+-]\d{2}:\d{2}$/.test(v);
+                  let dFinal = hasTZ ? d : new Date(v + '-03:00');
+                  if (isNaN(dFinal)) return String(v);
+                  return dFinal.toLocaleTimeString('pt-BR', {
                     hour12: false,
                     hour: '2-digit',
                     minute: '2-digit',
-                    second: '2-digit',
-                    timeZone: 'America/Sao_Paulo',
+                    second: '2-digit'
                   });
                 })()}</td>
                 <td>{aluno.attended ? 'Presente' : 'Ausente'}</td>
