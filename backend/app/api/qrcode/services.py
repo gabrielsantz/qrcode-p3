@@ -11,6 +11,11 @@ from app.infra.db.connection import get_db
 from app.infra.config import settings
 from app.core.utils.distance import check_distance_from_ic
 
+def as_brasilia_aware(dt: datetime | None) -> datetime | None:
+    if not dt:
+        return None
+    return dt.replace(microsecond=0).replace(tzinfo=ZoneInfo("America/Sao_Paulo"))
+
 
 def now_brasilia() -> datetime:
     """Retorna o horário atual de Brasília (America/Sao_Paulo) sem microssegundos,
@@ -139,7 +144,7 @@ def scan_qr_code(scan_data: QRScanRequest, current_user: User) -> QRScanResponse
                 course_id=class_session.course_id,
                 class_session_id=class_session.id,
                 present=True,
-                marked_at=existing_attendance.marked_at,
+                marked_at=as_brasilia_aware(existing_attendance.marked_at),
                 message="Presença já foi marcada para esta aula"
             )
 
@@ -161,6 +166,6 @@ def scan_qr_code(scan_data: QRScanRequest, current_user: User) -> QRScanResponse
             course_id=new_attendance.course_id,
             class_session_id=new_attendance.class_session_id,
             present=True,
-            marked_at=new_attendance.marked_at,
+            marked_at=as_brasilia_aware(new_attendance.marked_at),
             message="Presença registrada com sucesso"
         )
